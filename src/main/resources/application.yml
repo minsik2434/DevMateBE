@@ -1,8 +1,13 @@
 spring:
   application:
     name: apiserver
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/devmateTestDB
     username: minsik
     password: cm71806447*
+
+  jpa:
+    hibernate:
+      ddl-auto: create
