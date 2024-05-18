@@ -36,7 +36,7 @@ public class MemberController {
         SuccessResponseDto<String> successResponseDto = new SuccessResponseDto<>();
         successResponseDto.setResponseTime(LocalDateTime.now());
         successResponseDto.setStatus(HttpServletResponse.SC_CREATED);
-        successResponseDto.setMessage(saveMemberLoginId + " is Created");
+        successResponseDto.setMessage(saveMemberLoginId + " was created");
         return ResponseEntity.status(HttpStatus.CREATED).body(successResponseDto);
     }
 }

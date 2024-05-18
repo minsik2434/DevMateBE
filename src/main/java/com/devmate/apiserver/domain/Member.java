@@ -18,13 +18,12 @@ public class Member {
     @Column(name = "member_id")
     private Long id;
     private String loginId;
-
     private String password;
-
     private String name;
     private String nickName;
     private boolean experienced;
     private String profileImgUrl;
+
     public Member(String loginId, String password, String name, String nickName, boolean experienced, String profileImgUrl) {
         this.loginId = loginId;
         this.password = password;
