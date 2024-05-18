@@ -12,5 +12,4 @@ public abstract class ResponseDto<T> {
     private LocalDateTime responseTime;
     private Integer status;
     private T message;
-    private String path;
 }
