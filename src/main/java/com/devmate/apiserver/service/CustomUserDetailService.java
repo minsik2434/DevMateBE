@@ -18,11 +18,10 @@ import java.util.Optional;
 @Slf4j
 public class CustomUserDetailService implements UserDetailsService {
     private final MemberRepository memberRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<Member> loginMember = memberRepository.findByLoginId(username);
+    public UserDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {
+        Optional<Member> loginMember = memberRepository.findByLoginId(loginId);
         if(loginMember.isEmpty()){
             throw new UsernameNotFoundException("해당 아이디가 존재하지 않습니다.");
         }

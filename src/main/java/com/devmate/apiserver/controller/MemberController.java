@@ -44,10 +44,7 @@ public class MemberController {
 
     @PostMapping("/signin")
     public ResponseEntity<JwtToken> signIn(@RequestBody SignInDto signInDto){
-        String loginId = signInDto.getLoginId();
-        String password = signInDto.getPassword();
         JwtToken jwtToken = memberService.signIn(signInDto.getLoginId(),signInDto.getPassword());
-        log.info("jwtToken = {} ", jwtToken);
         return ResponseEntity.ok().body(jwtToken);
     }
 }
