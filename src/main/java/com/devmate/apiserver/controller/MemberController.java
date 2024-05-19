@@ -14,10 +14,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
 
 
@@ -53,6 +53,18 @@ public class MemberController {
         SuccessResponseDto<JwtToken> successResponse =
                 createSuccessResponse(jwtToken, HttpServletResponse.SC_OK);
         return ResponseEntity.ok().body(successResponse);
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> withDraw(Authentication authentication){
+        String loginId = getAuthorizedLoginId(authentication);
+        memberService.deleteMember(loginId);
+        return ResponseEntity.noContent().build();
+    }
+
+    private String getAuthorizedLoginId(Authentication authentication) {
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        return userDetails.getUsername();
     }
 
 
