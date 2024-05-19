@@ -47,7 +47,7 @@ public class MemberController {
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<SuccessResponseDto<JwtToken>> signIn(@RequestBody SignInDto signInDto){
+    public ResponseEntity<SuccessResponseDto<JwtToken>> signIn(@RequestBody @Validated SignInDto signInDto){
         JwtToken jwtToken = memberService.signIn(signInDto.getLoginId(),signInDto.getPassword());
 
         SuccessResponseDto<JwtToken> successResponse =
