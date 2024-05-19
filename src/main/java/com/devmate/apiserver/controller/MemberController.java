@@ -6,6 +6,8 @@ import com.devmate.apiserver.common.jwt.JwtToken;
 import com.devmate.apiserver.dto.SuccessResponseDto;
 import com.devmate.apiserver.dto.member.request.MemberRegisterDto;
 import com.devmate.apiserver.dto.member.request.SignInDto;
+import com.devmate.apiserver.dto.member.response.MemberDto;
+import com.devmate.apiserver.service.MemberQueryService;
 import com.devmate.apiserver.service.MemberService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -25,26 +27,41 @@ import java.time.LocalDateTime;
 @Slf4j
 public class MemberController {
     private final MemberService memberService;
+    private final MemberQueryService memberQueryService;
+    
     @PostMapping("/register")
-    public ResponseEntity<SuccessResponseDto<String>> register(@RequestBody @Validated MemberRegisterDto memberRegisterDto){
+    public ResponseEntity<SuccessResponseDto<MemberDto>> register(@RequestBody @Validated MemberRegisterDto memberRegisterDto){
         if(!memberRegisterDto.getPassword().equals(memberRegisterDto.getConfirmPassword())){
             throw new ConfirmPasswordNotMatchException();
         }
         if(memberService.isDuplicateLoginId(memberRegisterDto.getLoginId())){
-            throw new DuplicateResourceException("is exist LoginId");
+            throw new DuplicateResourceException("is exists LoginId");
         }
 
         String saveMemberLoginId = memberService.registerMember(memberRegisterDto);
-        SuccessResponseDto<String> successResponseDto = new SuccessResponseDto<>();
-        successResponseDto.setResponseTime(LocalDateTime.now());
-        successResponseDto.setStatus(HttpServletResponse.SC_CREATED);
-        successResponseDto.setMessage(saveMemberLoginId + " was created");
-        return ResponseEntity.status(HttpStatus.CREATED).body(successResponseDto);
+        MemberDto memberDto = memberQueryService.gatMemberInfo(saveMemberLoginId);
+
+        SuccessResponseDto<MemberDto> successResponse =
+                createSuccessResponse(memberDto, HttpServletResponse.SC_CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(successResponse);
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<JwtToken> signIn(@RequestBody SignInDto signInDto){
+    public ResponseEntity<SuccessResponseDto<JwtToken>> signIn(@RequestBody SignInDto signInDto){
         JwtToken jwtToken = memberService.signIn(signInDto.getLoginId(),signInDto.getPassword());
-        return ResponseEntity.ok().body(jwtToken);
+
+        SuccessResponseDto<JwtToken> successResponse =
+                createSuccessResponse(jwtToken, HttpServletResponse.SC_OK);
+        return ResponseEntity.ok().body(successResponse);
     }
+
+
+    private <T> SuccessResponseDto<T> createSuccessResponse(T data, int status){
+        SuccessResponseDto<T> successResponseDto = new SuccessResponseDto<>();
+        successResponseDto.setResponseTime(LocalDateTime.now());
+        successResponseDto.setStatus(status);
+        successResponseDto.setData(data);
+        return successResponseDto;
+    }
+
 }
