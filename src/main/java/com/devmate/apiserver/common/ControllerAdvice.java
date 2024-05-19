@@ -52,13 +52,13 @@ public class ControllerAdvice {
         failResponseDto.setError(httpStatus);
         if(ex instanceof MethodArgumentNotValidException validException){
             String message = getValidFailMessageString(validException);
-            failResponseDto.setMessage(message);
+            failResponseDto.setErrorMessage(message);
         }
         else if(ex instanceof ConfirmPasswordNotMatchException){
-            failResponseDto.setMessage("Confirm Password Not Matched");
+            failResponseDto.setErrorMessage("Confirm Password Not Matched");
         }
         else if(ex instanceof DuplicateResourceException){
-            failResponseDto.setMessage(ex.getMessage());
+            failResponseDto.setErrorMessage(ex.getMessage());
         }
         return failResponseDto;
     }
