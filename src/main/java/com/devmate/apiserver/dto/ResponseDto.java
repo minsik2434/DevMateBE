@@ -8,8 +8,7 @@ import java.time.LocalDateTime;
 
 @Setter
 @Getter
-public abstract class ResponseDto<T> {
+public abstract class ResponseDto {
     private LocalDateTime responseTime;
     private Integer status;
-    private T message;
 }
