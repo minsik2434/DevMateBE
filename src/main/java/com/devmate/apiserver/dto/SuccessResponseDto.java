@@ -7,5 +7,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class SuccessResponseDto<T> extends ResponseDto<T>{
+public class SuccessResponseDto<T> extends ResponseDto{
+    private T data;
 }
