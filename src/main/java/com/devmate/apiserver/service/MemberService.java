@@ -14,6 +14,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -46,5 +49,14 @@ public class MemberService {
                 .getObject()
                 .authenticate(authenticationToken);
         return provider.generateToken(authentication);
+    }
+
+    @Transactional
+    public void deleteMember(String loginId){
+        Optional<Member> optionalMember = memberRepository.findByLoginId(loginId);
+        if(optionalMember.isEmpty()){
+            throw new NoSuchElementException();
+        }
+        memberRepository.delete(optionalMember.get());
     }
 }
