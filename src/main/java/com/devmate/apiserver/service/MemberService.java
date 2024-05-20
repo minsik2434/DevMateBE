@@ -3,6 +3,7 @@ package com.devmate.apiserver.service;
 import com.devmate.apiserver.common.jwt.JwtToken;
 import com.devmate.apiserver.common.jwt.JwtTokenProvider;
 import com.devmate.apiserver.domain.Member;
+import com.devmate.apiserver.dto.member.request.EditProfileDto;
 import com.devmate.apiserver.dto.member.request.MemberRegisterDto;
 import com.devmate.apiserver.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,13 +31,16 @@ public class MemberService {
         return memberRepository.findByLoginId(loginId).isPresent();
     }
 
+    public boolean isDuplicateNickName(String nickName){
+        return memberRepository.findByNickName(nickName).isPresent();
+    }
+
     @Transactional
-    public String registerMember(MemberRegisterDto memberRegisterDto){
+    public Long registerMember(MemberRegisterDto memberRegisterDto){
         Member member = new Member(memberRegisterDto,
                 passwordEncoder.encode(memberRegisterDto.getPassword()));
-
         memberRepository.save(member);
-        return member.getLoginId();
+        return member.getId();
     }
 
     @Transactional
@@ -46,5 +53,25 @@ public class MemberService {
                 .getObject()
                 .authenticate(authenticationToken);
         return provider.generateToken(authentication);
+    }
+
+    @Transactional
+    public void deleteMember(String loginId){
+        Optional<Member> optionalMember = memberRepository.findByLoginId(loginId);
+        if(optionalMember.isEmpty()){
+            throw new NoSuchElementException();
+        }
+        memberRepository.delete(optionalMember.get());
+    }
+
+    @Transactional
+    public Long editMember(String loginId, EditProfileDto editProfileDto){
+        Optional<Member> optionalMember = memberRepository.findByLoginId(loginId);
+        if(optionalMember.isEmpty()){
+            throw new NoSuchElementException("member not exist");
+        }
+        Member member = optionalMember.get();
+        member.editMember(editProfileDto);
+        return member.getId();
     }
 }
