@@ -1,5 +1,6 @@
 package com.devmate.apiserver.service;
 
+import com.devmate.apiserver.common.exception.DuplicateResourceException;
 import com.devmate.apiserver.domain.Member;
 import com.devmate.apiserver.dto.member.request.EditProfileDto;
 import com.devmate.apiserver.dto.member.request.MemberRegisterDto;
@@ -20,6 +21,7 @@ import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
 @Slf4j
+@Transactional
 class MemberServiceTest {
 
     @Autowired
@@ -51,7 +53,6 @@ class MemberServiceTest {
     }
 
     @Test
-    @Transactional
     void memberSave_passwordEncryptedTest(){
         memberService.registerMember(mockRegisterDto);
         Optional<Member> optionalMember = memberRepository.findByLoginId(mockRegisterDto.getLoginId());
@@ -70,7 +71,6 @@ class MemberServiceTest {
     }
 
     @Test
-    @Transactional
     void memberEditTest(){
         memberService.registerMember(mockRegisterDto);
         Long editMemberId = memberService.editMember(mockRegisterDto.getLoginId(), mockEditProfileDto);

@@ -38,6 +38,9 @@ public class MemberController {
         if(memberService.isDuplicateLoginId(memberRegisterDto.getLoginId())){
             throw new DuplicateResourceException("is exists LoginId");
         }
+        if(memberService.isDuplicateNickName(memberRegisterDto.getNickName())){
+            throw new DuplicateResourceException("is exists NickName");
+        }
 
         Long saveMemberId = memberService.registerMember(memberRegisterDto);
         MemberDto memberDto = memberQueryService.gatMemberInfo(saveMemberId);
@@ -66,6 +69,9 @@ public class MemberController {
     @PatchMapping
     public ResponseEntity<SuccessResponseDto<MemberDto>> editProfile(Authentication authentication,
                                               @RequestBody @Validated EditProfileDto editProfileDto){
+        if(memberService.isDuplicateNickName(editProfileDto.getNickName())){
+            throw new DuplicateResourceException("is exists NickName");
+        }
         String loginId = getAuthorizedLoginId(authentication);
         Long memberId = memberService.editMember(loginId, editProfileDto);
         MemberDto memberDto = memberQueryService.gatMemberInfo(memberId);

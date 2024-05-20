@@ -5,12 +5,14 @@ import com.devmate.apiserver.dto.member.response.MemberDto;
 import com.devmate.apiserver.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class MemberQueryService {
     private final MemberRepository memberRepository;
 

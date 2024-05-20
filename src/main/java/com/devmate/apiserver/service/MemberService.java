@@ -31,11 +31,14 @@ public class MemberService {
         return memberRepository.findByLoginId(loginId).isPresent();
     }
 
+    public boolean isDuplicateNickName(String nickName){
+        return memberRepository.findByNickName(nickName).isPresent();
+    }
+
     @Transactional
     public Long registerMember(MemberRegisterDto memberRegisterDto){
         Member member = new Member(memberRegisterDto,
                 passwordEncoder.encode(memberRegisterDto.getPassword()));
-
         memberRepository.save(member);
         return member.getId();
     }
