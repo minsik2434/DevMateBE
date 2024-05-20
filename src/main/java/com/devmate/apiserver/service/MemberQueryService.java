@@ -14,8 +14,8 @@ import java.util.Optional;
 public class MemberQueryService {
     private final MemberRepository memberRepository;
 
-    public MemberDto gatMemberInfo(String loginId){
-        Optional<Member> optionalMember = memberRepository.findByLoginId(loginId);
+    public MemberDto gatMemberInfo(Long memberId){
+        Optional<Member> optionalMember = memberRepository.findById(memberId);
         if(optionalMember.isEmpty()){
             throw new NoSuchElementException("Member not Exist");
         }

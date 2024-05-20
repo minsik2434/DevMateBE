@@ -3,6 +3,7 @@ package com.devmate.apiserver.service;
 import com.devmate.apiserver.common.jwt.JwtToken;
 import com.devmate.apiserver.common.jwt.JwtTokenProvider;
 import com.devmate.apiserver.domain.Member;
+import com.devmate.apiserver.dto.member.request.EditProfileDto;
 import com.devmate.apiserver.dto.member.request.MemberRegisterDto;
 import com.devmate.apiserver.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,12 +32,12 @@ public class MemberService {
     }
 
     @Transactional
-    public String registerMember(MemberRegisterDto memberRegisterDto){
+    public Long registerMember(MemberRegisterDto memberRegisterDto){
         Member member = new Member(memberRegisterDto,
                 passwordEncoder.encode(memberRegisterDto.getPassword()));
 
         memberRepository.save(member);
-        return member.getLoginId();
+        return member.getId();
     }
 
     @Transactional
@@ -58,5 +59,16 @@ public class MemberService {
             throw new NoSuchElementException();
         }
         memberRepository.delete(optionalMember.get());
+    }
+
+    @Transactional
+    public Long editMember(String loginId, EditProfileDto editProfileDto){
+        Optional<Member> optionalMember = memberRepository.findByLoginId(loginId);
+        if(optionalMember.isEmpty()){
+            throw new NoSuchElementException("member not exist");
+        }
+        Member member = optionalMember.get();
+        member.editMember(editProfileDto);
+        return member.getId();
     }
 }
