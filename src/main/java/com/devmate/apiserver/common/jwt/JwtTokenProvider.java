@@ -77,15 +77,14 @@ public class JwtTokenProvider {
                     .parseClaimsJws(token);
             return true;
         } catch(SecurityException | MalformedJwtException e){
-            log.info("Invalid JWT",e);
+            throw new JwtTokenException("Invalid Token");
         } catch (ExpiredJwtException e){
-            log.info("Expired JWT",e);
+            throw new JwtTokenException("Expired Token");
         } catch (UnsupportedJwtException e){
-            log.info("Unsupported JWT");
+            throw new JwtTokenException("Unsupported Token");
         } catch (IllegalArgumentException e){
-            log.info("JWT Claims String is Empty",e);
+            throw new JwtTokenException("Empty Token body");
         }
-        return false;
     }
 
     private Claims parseClaims(String accessToken) {
