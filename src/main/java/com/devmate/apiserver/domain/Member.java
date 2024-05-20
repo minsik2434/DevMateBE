@@ -1,5 +1,6 @@
 package com.devmate.apiserver.domain;
 
+import com.devmate.apiserver.dto.member.request.EditProfileDto;
 import com.devmate.apiserver.dto.member.request.MemberRegisterDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -40,5 +41,12 @@ public class Member {
         this.nickName = memberRegisterDto.getNickName();
         this.experienced = memberRegisterDto.getExperienced();
         this.profileImgUrl = "default.png";
+    }
+
+    public void editMember(EditProfileDto editProfileDto){
+        this.name = editProfileDto.getName();
+        this.nickName = editProfileDto.getNickName();
+        this.experienced = editProfileDto.getExperienced();
+        this.profileImgUrl = editProfileDto.getImgUrl();
     }
 }

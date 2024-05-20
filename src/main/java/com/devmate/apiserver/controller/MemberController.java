@@ -4,6 +4,7 @@ import com.devmate.apiserver.common.exception.ConfirmPasswordNotMatchException;
 import com.devmate.apiserver.common.exception.DuplicateResourceException;
 import com.devmate.apiserver.common.jwt.JwtToken;
 import com.devmate.apiserver.dto.SuccessResponseDto;
+import com.devmate.apiserver.dto.member.request.EditProfileDto;
 import com.devmate.apiserver.dto.member.request.MemberRegisterDto;
 import com.devmate.apiserver.dto.member.request.SignInDto;
 import com.devmate.apiserver.dto.member.response.MemberDto;
@@ -38,8 +39,8 @@ public class MemberController {
             throw new DuplicateResourceException("is exists LoginId");
         }
 
-        String saveMemberLoginId = memberService.registerMember(memberRegisterDto);
-        MemberDto memberDto = memberQueryService.gatMemberInfo(saveMemberLoginId);
+        Long saveMemberId = memberService.registerMember(memberRegisterDto);
+        MemberDto memberDto = memberQueryService.gatMemberInfo(saveMemberId);
 
         SuccessResponseDto<MemberDto> successResponse =
                 createSuccessResponse(memberDto, HttpServletResponse.SC_CREATED);
@@ -61,6 +62,18 @@ public class MemberController {
         memberService.deleteMember(loginId);
         return ResponseEntity.noContent().build();
     }
+
+    @PatchMapping
+    public ResponseEntity<SuccessResponseDto<MemberDto>> editProfile(Authentication authentication,
+                                              @RequestBody @Validated EditProfileDto editProfileDto){
+        String loginId = getAuthorizedLoginId(authentication);
+        Long memberId = memberService.editMember(loginId, editProfileDto);
+        MemberDto memberDto = memberQueryService.gatMemberInfo(memberId);
+        SuccessResponseDto<MemberDto> successResponse
+                = createSuccessResponse(memberDto, HttpServletResponse.SC_OK);
+        return ResponseEntity.ok().body(successResponse);
+    }
+
 
     private String getAuthorizedLoginId(Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
