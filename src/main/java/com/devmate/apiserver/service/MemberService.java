@@ -1,5 +1,6 @@
 package com.devmate.apiserver.service;
 
+import com.devmate.apiserver.common.exception.IdOrPasswordIncorrectException;
 import com.devmate.apiserver.common.jwt.JwtToken;
 import com.devmate.apiserver.common.jwt.JwtTokenProvider;
 import com.devmate.apiserver.domain.Member;
@@ -12,11 +13,9 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -52,9 +51,14 @@ public class MemberService {
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginId, password);
 
-        Authentication authentication = authenticationManagerBuilder
-                .getObject()
-                .authenticate(authenticationToken);
+        Authentication authentication = null;
+        try {
+            authentication = authenticationManagerBuilder
+                    .getObject()
+                    .authenticate(authenticationToken);
+        } catch (BadCredentialsException e) {
+            throw new IdOrPasswordIncorrectException("Id or Password Incorrect");
+        }
         return provider.generateToken(authentication);
     }
 
