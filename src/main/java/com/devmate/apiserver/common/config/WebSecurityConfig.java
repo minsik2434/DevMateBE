@@ -1,7 +1,9 @@
 package com.devmate.apiserver.common.config;
 
 import com.devmate.apiserver.common.jwt.JwtAuthenticationFilter;
+import com.devmate.apiserver.common.jwt.JwtExceptionHandler;
 import com.devmate.apiserver.common.jwt.JwtTokenProvider;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,7 +30,8 @@ public class WebSecurityConfig{
                 .and()
                 .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
                         .requestMatchers(HttpMethod.POST, "/member/register", "/member/signin").permitAll().anyRequest().authenticated())
-                .addFilterBefore(new JwtAuthenticationFilter(provider), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthenticationFilter(provider), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtExceptionHandler(), JwtAuthenticationFilter.class);
         return http.build();
     }
 }

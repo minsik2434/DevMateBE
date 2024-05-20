@@ -2,12 +2,14 @@ package com.devmate.apiserver.common;
 
 import com.devmate.apiserver.common.exception.ConfirmPasswordNotMatchException;
 import com.devmate.apiserver.common.exception.DuplicateResourceException;
+import com.devmate.apiserver.common.exception.IdOrPasswordIncorrectException;
 import com.devmate.apiserver.dto.FailResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -20,6 +22,12 @@ import java.util.stream.IntStream;
 @RestControllerAdvice
 @Slf4j
 public class ControllerAdvice {
+    @ExceptionHandler(IdOrPasswordIncorrectException.class)
+    public ResponseEntity<FailResponseDto> handleFailLogin(BadCredentialsException ex,
+                                                           HttpServletRequest request){
+        FailResponseDto failResponseDto = getFailResponseDto(ex, request, HttpStatus.UNAUTHORIZED, HttpServletResponse.SC_UNAUTHORIZED);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(failResponseDto);
+    }
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<FailResponseDto> handleValidationExceptions(MethodArgumentNotValidException ex,
                                                                       HttpServletRequest request) {
@@ -48,7 +56,7 @@ public class ControllerAdvice {
         FailResponseDto failResponseDto = new FailResponseDto();
         failResponseDto.setResponseTime(LocalDateTime.now());
         failResponseDto.setStatus(errorCode);
-        failResponseDto.setPath(request.getRequestURL().toString());
+        failResponseDto.setPath(request.getServletPath());
         failResponseDto.setError(httpStatus);
         if(ex instanceof MethodArgumentNotValidException validException){
             String message = getValidFailMessageString(validException);
@@ -58,6 +66,9 @@ public class ControllerAdvice {
             failResponseDto.setErrorMessage("Confirm Password Not Matched");
         }
         else if(ex instanceof DuplicateResourceException){
+            failResponseDto.setErrorMessage(ex.getMessage());
+        }
+        else if(ex instanceof IdOrPasswordIncorrectException){
             failResponseDto.setErrorMessage(ex.getMessage());
         }
         return failResponseDto;

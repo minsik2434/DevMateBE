@@ -1,6 +1,7 @@
 package com.devmate.apiserver.service;
 
-import com.devmate.apiserver.common.exception.DuplicateResourceException;
+import com.devmate.apiserver.common.exception.IdOrPasswordIncorrectException;
+import com.devmate.apiserver.common.jwt.JwtToken;
 import com.devmate.apiserver.domain.Member;
 import com.devmate.apiserver.dto.member.request.EditProfileDto;
 import com.devmate.apiserver.dto.member.request.MemberRegisterDto;
@@ -83,5 +84,23 @@ class MemberServiceTest {
         assertThat(member.getNickName()).isEqualTo(mockEditProfileDto.getNickName());
         assertThat(member.isExperienced()).isEqualTo(mockEditProfileDto.getExperienced());
         assertThat(member.getProfileImgUrl()).isEqualTo(mockEditProfileDto.getImgUrl());
+    }
+
+    @Test
+    void signInTest(){
+        memberService.registerMember(mockRegisterDto);
+        JwtToken jwtToken = memberService.signIn(mockRegisterDto.getLoginId(), mockRegisterDto.getPassword());
+        assertThat(jwtToken).isNotNull();
+        assertThat(jwtToken.getAccessToken()).isNotBlank();
+        assertThat(jwtToken.getRefreshToken()).isNotBlank();
+        assertThat(jwtToken.getGrantType()).isNotBlank();
+    }
+
+    @Test
+    void signInFailTest(){
+        memberService.registerMember(mockRegisterDto);
+        assertThatThrownBy(()-> memberService.signIn("IncorrectId", "IncorrectPassword"))
+                .isInstanceOf(IdOrPasswordIncorrectException.class)
+                .hasMessage("Id or Password Incorrect");
     }
 }

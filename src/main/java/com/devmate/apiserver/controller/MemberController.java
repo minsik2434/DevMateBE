@@ -3,6 +3,7 @@ package com.devmate.apiserver.controller;
 import com.devmate.apiserver.common.exception.ConfirmPasswordNotMatchException;
 import com.devmate.apiserver.common.exception.DuplicateResourceException;
 import com.devmate.apiserver.common.jwt.JwtToken;
+import com.devmate.apiserver.dto.FailResponseDto;
 import com.devmate.apiserver.dto.SuccessResponseDto;
 import com.devmate.apiserver.dto.member.request.EditProfileDto;
 import com.devmate.apiserver.dto.member.request.MemberRegisterDto;
@@ -10,16 +11,22 @@ import com.devmate.apiserver.dto.member.request.SignInDto;
 import com.devmate.apiserver.dto.member.response.MemberDto;
 import com.devmate.apiserver.service.MemberQueryService;
 import com.devmate.apiserver.service.MemberService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.IntStream;
 
 
 @RestController
@@ -29,6 +36,12 @@ import java.time.LocalDateTime;
 public class MemberController {
     private final MemberService memberService;
     private final MemberQueryService memberQueryService;
+
+    @GetMapping("test")
+    public String test(){
+        return "test";
+    }
+
     
     @PostMapping("/register")
     public ResponseEntity<SuccessResponseDto<MemberDto>> register(@RequestBody @Validated MemberRegisterDto memberRegisterDto){
