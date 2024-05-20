@@ -48,7 +48,7 @@ public class ControllerAdvice {
         FailResponseDto failResponseDto = new FailResponseDto();
         failResponseDto.setResponseTime(LocalDateTime.now());
         failResponseDto.setStatus(errorCode);
-        failResponseDto.setPath(request.getRequestURL().toString());
+        failResponseDto.setPath(request.getServletPath());
         failResponseDto.setError(httpStatus);
         if(ex instanceof MethodArgumentNotValidException validException){
             String message = getValidFailMessageString(validException);

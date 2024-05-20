@@ -1,6 +1,5 @@
 package com.devmate.apiserver.service;
 
-import com.devmate.apiserver.common.exception.DuplicateResourceException;
 import com.devmate.apiserver.domain.Member;
 import com.devmate.apiserver.dto.member.request.EditProfileDto;
 import com.devmate.apiserver.dto.member.request.MemberRegisterDto;

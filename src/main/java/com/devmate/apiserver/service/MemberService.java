@@ -8,12 +8,15 @@ import com.devmate.apiserver.dto.member.request.MemberRegisterDto;
 import com.devmate.apiserver.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -27,6 +30,7 @@ public class MemberService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider provider;
+
     public boolean isDuplicateLoginId(String loginId){
         return memberRepository.findByLoginId(loginId).isPresent();
     }
@@ -45,7 +49,6 @@ public class MemberService {
 
     @Transactional
     public JwtToken signIn(String loginId, String password){
-
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginId, password);
 
