@@ -54,10 +54,14 @@ class MemberServiceTest {
 
     @BeforeEach
     void initEditProfileDto(){
+        List<Long> list = new ArrayList<>();
+        list.add(1L);
+        list.add(2L);
         mockEditProfileDto.setName("EditTestName");
         mockEditProfileDto.setNickName("EditTestNick");
         mockEditProfileDto.setExperienced(false);
         mockEditProfileDto.setImgUrl("EditTestImg");
+        mockEditProfileDto.setInterests(new ArrayList<Long>(list));
     }
 
     @Test

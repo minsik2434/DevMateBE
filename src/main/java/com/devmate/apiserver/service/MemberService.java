@@ -53,6 +53,7 @@ public class MemberService {
     public Long registerMember(MemberRegisterDto memberRegisterDto){
         Member member = new Member(memberRegisterDto,
                 passwordEncoder.encode(memberRegisterDto.getPassword()));
+
         if(!memberRegisterDto.getInterests().isEmpty()){
             for(Long interestId : memberRegisterDto.getInterests()){
                 Interest interest = interestRepository.findById(interestId).orElseThrow(
@@ -89,9 +90,14 @@ public class MemberService {
 
     @Transactional
     public Long editMember(String loginId, EditProfileDto editProfileDto){
-        Optional<Member> optionalMember = memberRepository.findMemberAndInterestsByLoginId(loginId);
-        Member member = optionalMember
-                .orElseThrow(() -> new NoSuchElementException("member not exist"));
+        Member member;
+        if(memberRepository.findMemberAndInterestsByLoginId(loginId).isEmpty()){
+            member = memberRepository.findByLoginId(loginId).orElseThrow(() ->
+                    new NoSuchElementException("Member Not Found"));
+        }
+        else{
+            member = memberRepository.findMemberAndInterestsByLoginId(loginId).get();
+        }
         if(!member.getNickName().equals(editProfileDto.getNickName())){
             if (memberRepository.findByNickName(editProfileDto.getNickName()).isPresent()) {
                throw new DuplicateResourceException("is exists NickName");
