@@ -14,11 +14,13 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @RequiredArgsConstructor
 @EnableWebSecurity
 @Configuration
-public class WebSecurityConfig{
+public class WebSecurityConfig implements WebMvcConfigurer{
     private final JwtTokenProvider provider;
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
@@ -29,9 +31,21 @@ public class WebSecurityConfig{
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
-                        .requestMatchers(HttpMethod.POST, "/member/register", "/member/signin").permitAll().anyRequest().authenticated())
+                        .requestMatchers(HttpMethod.POST, "/members/register", "/members/signin").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/interests").permitAll()
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll()
+                        .anyRequest().authenticated())
                 .addFilterBefore(new JwtAuthenticationFilter(provider), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new JwtExceptionHandler(), JwtAuthenticationFilter.class);
         return http.build();
     }
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("http://localhost:3000")
+                .allowedMethods("*")
+                .allowCredentials(true);
+    }
+
 }

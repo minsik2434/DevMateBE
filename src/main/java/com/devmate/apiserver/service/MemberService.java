@@ -1,11 +1,15 @@
 package com.devmate.apiserver.service;
 
+import com.devmate.apiserver.common.exception.DuplicateResourceException;
 import com.devmate.apiserver.common.exception.IdOrPasswordIncorrectException;
 import com.devmate.apiserver.common.jwt.JwtToken;
 import com.devmate.apiserver.common.jwt.JwtTokenProvider;
+import com.devmate.apiserver.domain.Interest;
 import com.devmate.apiserver.domain.Member;
+import com.devmate.apiserver.domain.MemberInterest;
 import com.devmate.apiserver.dto.member.request.EditProfileDto;
 import com.devmate.apiserver.dto.member.request.MemberRegisterDto;
+import com.devmate.apiserver.repository.InterestRepository;
 import com.devmate.apiserver.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +30,7 @@ import java.util.Optional;
 @Slf4j
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final InterestRepository interestRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider provider;
@@ -42,6 +47,14 @@ public class MemberService {
     public Long registerMember(MemberRegisterDto memberRegisterDto){
         Member member = new Member(memberRegisterDto,
                 passwordEncoder.encode(memberRegisterDto.getPassword()));
+
+        if(!memberRegisterDto.getInterests().isEmpty()){
+            for(Long interestId : memberRegisterDto.getInterests()){
+                Interest interest = interestRepository.findById(interestId).orElseThrow(
+                        ()-> new NoSuchElementException("interest not exists"));
+                new MemberInterest(member,interest);
+            }
+        }
         memberRepository.save(member);
         return member.getId();
     }
@@ -65,20 +78,34 @@ public class MemberService {
     @Transactional
     public void deleteMember(String loginId){
         Optional<Member> optionalMember = memberRepository.findByLoginId(loginId);
-        if(optionalMember.isEmpty()){
-            throw new NoSuchElementException();
-        }
+        optionalMember.orElseThrow(()-> new NoSuchElementException("member not exist"));
         memberRepository.delete(optionalMember.get());
     }
 
     @Transactional
     public Long editMember(String loginId, EditProfileDto editProfileDto){
-        Optional<Member> optionalMember = memberRepository.findByLoginId(loginId);
-        if(optionalMember.isEmpty()){
-            throw new NoSuchElementException("member not exist");
+        Member member;
+        if(memberRepository.findMemberAndInterestsByLoginId(loginId).isEmpty()){
+            member = memberRepository.findByLoginId(loginId).orElseThrow(() ->
+                    new NoSuchElementException("Member Not Found"));
         }
-        Member member = optionalMember.get();
+        else{
+            member = memberRepository.findMemberAndInterestsByLoginId(loginId).get();
+        }
+        if(!member.getNickName().equals(editProfileDto.getNickName())){
+            if (memberRepository.findByNickName(editProfileDto.getNickName()).isPresent()) {
+               throw new DuplicateResourceException("is exists NickName");
+            }
+        }
+        member.getMemberInterests().clear();
         member.editMember(editProfileDto);
+        if(!editProfileDto.getInterests().isEmpty()){
+            for(Long interestId : editProfileDto.getInterests()){
+                Interest interest = interestRepository.findById(interestId).orElseThrow(
+                        ()-> new NoSuchElementException("interest not exists"));
+                new MemberInterest(member,interest);
+            }
+        }
         return member.getId();
     }
 }

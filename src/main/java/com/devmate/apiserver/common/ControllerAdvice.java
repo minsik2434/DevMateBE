@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.IntStream;
 
 @RestControllerAdvice
@@ -44,6 +45,12 @@ public class ControllerAdvice {
                 HttpServletResponse.SC_BAD_REQUEST);
         return ResponseEntity.badRequest().body(failResponseDto);
     }
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<FailResponseDto> handleNoSuchElementException(NoSuchElementException ex,
+                                                                        HttpServletRequest request){
+        FailResponseDto failResponseDto = getFailResponseDto(ex, request, HttpStatus.NOT_FOUND, HttpServletResponse.SC_NOT_FOUND);
+        return ResponseEntity.badRequest().body(failResponseDto);
+    }
 
     @ExceptionHandler(DuplicateResourceException.class)
     public ResponseEntity<FailResponseDto> handleDuplicateResourceException(DuplicateResourceException ex, HttpServletRequest request){
@@ -63,12 +70,9 @@ public class ControllerAdvice {
             failResponseDto.setErrorMessage(message);
         }
         else if(ex instanceof ConfirmPasswordNotMatchException){
-            failResponseDto.setErrorMessage("Confirm Password Not Matched");
-        }
-        else if(ex instanceof DuplicateResourceException){
             failResponseDto.setErrorMessage(ex.getMessage());
         }
-        else if(ex instanceof IdOrPasswordIncorrectException){
+        else{
             failResponseDto.setErrorMessage(ex.getMessage());
         }
         return failResponseDto;
