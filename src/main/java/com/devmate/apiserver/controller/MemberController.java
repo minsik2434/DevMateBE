@@ -20,6 +20,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -76,7 +78,7 @@ public class MemberController {
     public ResponseEntity<SuccessResponseDto<MemberDto>> editProfile(Authentication authentication,
                                               @RequestBody @Validated EditProfileDto editProfileDto){
         String loginId = controllerUtil.getAuthorizedLoginId(authentication);
-
+        List<Long> interests = editProfileDto.getInterests();
         Long memberId = memberService.editMember(loginId, editProfileDto);
         MemberDto memberDto = memberQueryService.getMemberInfo(memberId);
         SuccessResponseDto<MemberDto> successResponse
