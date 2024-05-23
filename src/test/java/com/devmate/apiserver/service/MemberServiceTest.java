@@ -3,6 +3,7 @@ package com.devmate.apiserver.service;
 import com.devmate.apiserver.common.exception.IdOrPasswordIncorrectException;
 import com.devmate.apiserver.common.jwt.JwtToken;
 import com.devmate.apiserver.domain.Member;
+import com.devmate.apiserver.domain.MemberInterest;
 import com.devmate.apiserver.dto.member.request.EditProfileDto;
 import com.devmate.apiserver.dto.member.request.MemberRegisterDto;
 import com.devmate.apiserver.repository.MemberRepository;
@@ -15,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -36,13 +38,18 @@ class MemberServiceTest {
     EditProfileDto mockEditProfileDto = new EditProfileDto();
     @BeforeEach
     void initRegisterDto(){
+        List<Long> list = new ArrayList<>();
+        list.add(1L);
+        list.add(2L);
+        list.add(3L);
         mockRegisterDto.setLoginId("test");
         mockRegisterDto.setPassword("testPassword");
         mockRegisterDto.setConfirmPassword("testPassword");
         mockRegisterDto.setName("testMember");
         mockRegisterDto.setNickName("testNick");
         mockRegisterDto.setExperienced(true);
-        mockRegisterDto.setInterests(new ArrayList());
+        mockRegisterDto.setInterests(list);
+
     }
 
     @BeforeEach
@@ -57,18 +64,18 @@ class MemberServiceTest {
     void memberSave_passwordEncryptedTest(){
         memberService.registerMember(mockRegisterDto);
         Optional<Member> optionalMember = memberRepository.findByLoginId(mockRegisterDto.getLoginId());
-        Member findMember;
-        if(optionalMember.isPresent()){
-            findMember = optionalMember.get();
-        }
-        else{
-            throw new NoSuchElementException();
-        }
+        Member findMember = optionalMember.orElseThrow(NoSuchElementException::new);
         assertThat(findMember.getLoginId()).isEqualTo(mockRegisterDto.getLoginId());
         assertThat(passwordEncoder.matches(mockRegisterDto.getPassword(), findMember.getPassword())).isTrue();
         assertThat(findMember.getName()).isEqualTo(mockRegisterDto.getName());
         assertThat(findMember.getNickName()).isEqualTo(mockRegisterDto.getNickName());
         assertThat(findMember.isExperienced()).isEqualTo(mockRegisterDto.getExperienced());
+        List<MemberInterest> memberInterests = findMember.getMemberInterests();
+        List<Long> idList = memberInterests.stream()
+                .map(memberInterest -> memberInterest.getInterest()
+                        .getId()).toList();
+        assertThat(idList).containsExactlyInAnyOrder(1L, 2L, 3L);
+
     }
 
     @Test

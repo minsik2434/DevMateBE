@@ -5,10 +5,11 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Setter
 @Getter
 public class EditProfileDto {
-    //TODO Interests 변경 추가
     @NotBlank(message = "Name NotBlank")
     private String name;
     @NotBlank(message = "NickName NotBlank")
@@ -17,4 +18,6 @@ public class EditProfileDto {
     private String imgUrl;
     @NotNull(message = "Experienced NotNull")
     private Boolean experienced;
+    @NotNull(message = "Interests NotNull")
+    private List<Long> interests;
 }

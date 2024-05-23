@@ -22,5 +22,6 @@ public class MemberRegisterDto {
     private String nickName;
     @NotNull(message = "Experienced NotNull")
     private Boolean experienced;
-    private List<String> interests;
+    @NotNull(message = "Interests NotNull")
+    private List<Long> interests;
 }
