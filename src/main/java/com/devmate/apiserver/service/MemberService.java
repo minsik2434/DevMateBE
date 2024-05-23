@@ -10,11 +10,7 @@ import com.devmate.apiserver.domain.MemberInterest;
 import com.devmate.apiserver.dto.member.request.EditProfileDto;
 import com.devmate.apiserver.dto.member.request.MemberRegisterDto;
 import com.devmate.apiserver.repository.InterestRepository;
-import com.devmate.apiserver.repository.MemberInterestRepository;
 import com.devmate.apiserver.repository.MemberRepository;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.PersistenceUnitUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -25,7 +21,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -36,7 +31,6 @@ import java.util.Optional;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final InterestRepository interestRepository;
-    private final MemberInterestRepository memberInterestRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider provider;
