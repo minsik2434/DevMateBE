@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -16,11 +15,15 @@ import java.util.Optional;
 public class MemberQueryService {
     private final MemberRepository memberRepository;
 
-    public MemberDto gatMemberInfo(Long memberId){
-        Optional<Member> optionalMember = memberRepository.findById(memberId);
-        if(optionalMember.isEmpty()){
-            throw new NoSuchElementException("Member not Exist");
+    public MemberDto getMemberInfo(Long memberId){
+        Member member;
+        if(memberRepository.findMemberAndInterestsById(memberId).isEmpty()){
+            member = memberRepository.findById(memberId).orElseThrow(() ->
+                    new NoSuchElementException("Member Not Found"));
         }
-        return new MemberDto(optionalMember.get());
+        else{
+            member = memberRepository.findMemberAndInterestsById(memberId).get();
+        }
+        return new MemberDto(member);
     }
 }

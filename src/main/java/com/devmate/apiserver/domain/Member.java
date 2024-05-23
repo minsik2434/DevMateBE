@@ -2,14 +2,13 @@ package com.devmate.apiserver.domain;
 
 import com.devmate.apiserver.dto.member.request.EditProfileDto;
 import com.devmate.apiserver.dto.member.request.MemberRegisterDto;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -24,7 +23,8 @@ public class Member {
     private String nickName;
     private boolean experienced;
     private String profileImgUrl;
-
+    @OneToMany(mappedBy = "member", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+    private List<MemberInterest> memberInterests = new ArrayList<>();
     public Member(String loginId, String password, String name, String nickName, boolean experienced, String profileImgUrl) {
         this.loginId = loginId;
         this.password = password;
