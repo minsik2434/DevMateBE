@@ -22,5 +22,5 @@ public class EditProfileDto {
     private Boolean experienced;
     @NotNull(message = "Interests NotNull")
     @UniqueElements(message = "Interests Element Must Be Unique")
-    private ArrayList<Long> interests;
+    private List<Long> interests;
 }
