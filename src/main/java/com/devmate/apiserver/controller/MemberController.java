@@ -27,8 +27,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @Tag(name = "회원 컨트롤러", description = "회원 API")
 @RestController
 @RequiredArgsConstructor
@@ -39,12 +37,15 @@ public class MemberController {
     private final MemberQueryService memberQueryService;
     private final ControllerUtil controllerUtil;
 
-
-    @GetMapping("test")
-    public String test(){
-        return "test";
+    @GetMapping
+    public ResponseEntity<SuccessResponseDto<MemberDto>> info(Authentication authentication){
+        log.info("findMemberInfo");
+        String loginId = controllerUtil.getAuthorizedLoginId(authentication);
+        MemberDto memberDto = memberQueryService.getMemberInfoByLoginId(loginId);
+        SuccessResponseDto<MemberDto> successResponse =
+                controllerUtil.createSuccessResponse(memberDto, HttpServletResponse.SC_OK);
+        return ResponseEntity.ok().body(successResponse);
     }
-
 
     @Operation(summary = "회원 등록", description = "비밀번호와 비밀번호 확인이 일치해야함, 이미 존재하는 ID 사용 불가, 이미 존재하는 닉네임 사용 불가")
     @ApiResponses({
@@ -66,7 +67,7 @@ public class MemberController {
         }
 
         Long saveMemberId = memberService.registerMember(memberRegisterDto);
-        MemberDto memberDto = memberQueryService.getMemberInfo(saveMemberId);
+        MemberDto memberDto = memberQueryService.getMemberInfoById(saveMemberId);
 
         SuccessResponseDto<MemberDto> successResponse =
                 controllerUtil.createSuccessResponse(memberDto, HttpServletResponse.SC_CREATED);
@@ -81,6 +82,7 @@ public class MemberController {
     })
     @PostMapping("/signin")
     public ResponseEntity<SuccessResponseDto<JwtToken>> signIn(@RequestBody @Validated SignInDto signInDto){
+        log.info("signin");
         JwtToken jwtToken = memberService.signIn(signInDto.getLoginId(),signInDto.getPassword());
 
         SuccessResponseDto<JwtToken> successResponse =
@@ -111,13 +113,10 @@ public class MemberController {
     public ResponseEntity<SuccessResponseDto<MemberDto>> editProfile(Authentication authentication,
                                               @RequestBody @Validated EditProfileDto editProfileDto){
         String loginId = controllerUtil.getAuthorizedLoginId(authentication);
-        List<Long> interests = editProfileDto.getInterests();
         Long memberId = memberService.editMember(loginId, editProfileDto);
-        MemberDto memberDto = memberQueryService.getMemberInfo(memberId);
+        MemberDto memberDto = memberQueryService.getMemberInfoById(memberId);
         SuccessResponseDto<MemberDto> successResponse
                 = controllerUtil.createSuccessResponse(memberDto, HttpServletResponse.SC_OK);
         return ResponseEntity.ok().body(successResponse);
     }
-
-
 }

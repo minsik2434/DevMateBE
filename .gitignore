@@ -35,3 +35,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Secure Config ###
+src/main/resources/application-private.yml

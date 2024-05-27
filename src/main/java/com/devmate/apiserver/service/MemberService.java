@@ -47,7 +47,6 @@ public class MemberService {
     public Long registerMember(MemberRegisterDto memberRegisterDto){
         Member member = new Member(memberRegisterDto,
                 passwordEncoder.encode(memberRegisterDto.getPassword()));
-
         if(!memberRegisterDto.getInterests().isEmpty()){
             for(Long interestId : memberRegisterDto.getInterests()){
                 Interest interest = interestRepository.findById(interestId).orElseThrow(

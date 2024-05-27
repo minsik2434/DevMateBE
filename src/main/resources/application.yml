@@ -20,5 +20,11 @@ spring:
 
     open-in-view: false
 
+  profiles:
+    include: private
+
 jwt:
   secret: 4f825379d86d10570287b521eee0bf24fbf40f5481091168eb4b295486d5a2f9
+
+file:
+  dir: /Users/choiminsik/Desktop/imageTest/
