@@ -15,7 +15,7 @@ import java.util.NoSuchElementException;
 public class MemberQueryService {
     private final MemberRepository memberRepository;
 
-    public MemberDto getMemberInfo(Long memberId){
+    public MemberDto getMemberInfoById(Long memberId){
         Member member;
         if(memberRepository.findMemberAndInterestsById(memberId).isEmpty()){
             member = memberRepository.findById(memberId).orElseThrow(() ->
@@ -23,6 +23,18 @@ public class MemberQueryService {
         }
         else{
             member = memberRepository.findMemberAndInterestsById(memberId).get();
+        }
+        return new MemberDto(member);
+    }
+
+    public MemberDto getMemberInfoByLoginId(String loginId){
+        Member member;
+        if(memberRepository.findMemberAndInterestsByLoginId(loginId).isEmpty()){
+            member = memberRepository.findByLoginId(loginId).orElseThrow(() ->
+                    new NoSuchElementException("Member Not Found"));
+        }
+        else{
+            member = memberRepository.findMemberAndInterestsByLoginId(loginId).get();
         }
         return new MemberDto(member);
     }

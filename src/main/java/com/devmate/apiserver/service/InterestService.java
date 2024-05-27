@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -16,6 +17,9 @@ public class InterestService {
 
     public List<Interest> findInterests(){
         return interestRepository.findAll();
+    }
+    public Interest findInterest(Long id){
+        return interestRepository.findById(id).orElseThrow(() -> new NoSuchElementException("interest not exists"));
     }
 
 }

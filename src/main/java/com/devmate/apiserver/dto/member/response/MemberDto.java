@@ -15,17 +15,17 @@ public class MemberDto {
     private String name;
     private String nickName;
     private Boolean experienced;
-    private String profileImgUrl;
-    private List<String> memberInterests = new ArrayList<>();
+    private String imgUrl;
+    private List<Long> interests = new ArrayList<>();
 
     public MemberDto(Member member){
         this.loginId = member.getLoginId();
         this.name = member.getName();
         this.nickName = member.getNickName();
         this.experienced = member.isExperienced();
-        this.profileImgUrl = member.getProfileImgUrl();
+        this.imgUrl = member.getProfileImgUrl();
         for (MemberInterest memberInterest : member.getMemberInterests()) {
-            memberInterests.add(memberInterest.getInterest().getName());
+            interests.add(memberInterest.getInterest().getId());
         }
     }
 }
