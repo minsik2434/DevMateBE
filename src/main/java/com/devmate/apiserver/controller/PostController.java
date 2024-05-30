@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,7 +20,7 @@ public class PostController {
     @PostMapping("/{category}")
     public ResponseEntity<String> postRegister(@PathVariable("category") String category,
                                                Authentication authentication,
-                                               @RequestBody PostRegisterDto postRegisterDto){
+                                               @RequestBody @Validated PostRegisterDto postRegisterDto){
         String loginId = controllerUtil.getAuthorizedLoginId(authentication);
         Long l = postService.postSave(loginId,category, postRegisterDto);
         return ResponseEntity.ok("test");
