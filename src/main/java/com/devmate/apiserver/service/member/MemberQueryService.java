@@ -1,4 +1,4 @@
-package com.devmate.apiserver.service;
+package com.devmate.apiserver.service.member;
 
 import com.devmate.apiserver.domain.Member;
 import com.devmate.apiserver.dto.member.response.MemberDto;
