@@ -1,8 +1,11 @@
 package com.devmate.apiserver.domain;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PostHashTag {
     @Id @GeneratedValue
     @Column(name = "post_hashtag_id")
@@ -15,4 +18,9 @@ public class PostHashTag {
     @ManyToOne
     @JoinColumn(name = "hashtag_id")
     private HashTag hashTag;
+
+    public PostHashTag(Post post, HashTag hashTag){
+        this.post = post;
+        this.hashTag = hashTag;
+    }
 }
