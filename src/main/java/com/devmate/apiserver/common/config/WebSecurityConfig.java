@@ -31,7 +31,7 @@ public class WebSecurityConfig implements WebMvcConfigurer{
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
-                        .requestMatchers(HttpMethod.POST, "/members/register", "/members/signin","/image/upload").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/members/register", "/members/signin").permitAll()
                         .requestMatchers(HttpMethod.GET, "/interests/**").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll()
                         .anyRequest().authenticated())
