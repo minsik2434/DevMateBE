@@ -1,4 +1,4 @@
-package com.devmate.apiserver.service;
+package com.devmate.apiserver.service.post;
 
 import com.devmate.apiserver.domain.*;
 import com.devmate.apiserver.dto.post.request.PostRegisterDto;
@@ -35,16 +35,16 @@ public class PostService {
             List<String> tags = postRegisterDto.getTags();
             for (String tag : tags) {
                 Optional<HashTag> findHashtag = hashTagRepository.findByName(tag);
+                PostHashTag postHashTag;
                 if(findHashtag.isPresent()){
-                    PostHashTag postHashTag = new PostHashTag(savedPost, findHashtag.get());
-                    postHashTagRepository.save(postHashTag);
+                    postHashTag = new PostHashTag(savedPost, findHashtag.get());
                 }
                 else{
                     HashTag hashTag = new HashTag(tag);
                     HashTag savedHashTag = hashTagRepository.save(hashTag);
-                    PostHashTag postHashTag = new PostHashTag(savedPost, savedHashTag);
-                    postHashTagRepository.save(postHashTag);
+                    postHashTag = new PostHashTag(savedPost, savedHashTag);
                 }
+                postHashTagRepository.save(postHashTag);
             }
         }
 

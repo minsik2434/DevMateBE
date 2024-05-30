@@ -1,8 +1,12 @@
 package com.devmate.apiserver.controller;
 
 import com.devmate.apiserver.controller.util.ControllerUtil;
+import com.devmate.apiserver.dto.SuccessResponseDto;
 import com.devmate.apiserver.dto.post.request.PostRegisterDto;
-import com.devmate.apiserver.service.PostService;
+import com.devmate.apiserver.dto.post.response.PostDto;
+import com.devmate.apiserver.service.post.PostQueryService;
+import com.devmate.apiserver.service.post.PostService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -17,12 +21,16 @@ import org.springframework.web.bind.annotation.*;
 public class PostController {
     private final ControllerUtil controllerUtil;
     private final PostService postService;
+    private final PostQueryService postQueryService;
     @PostMapping("/{category}")
-    public ResponseEntity<String> postRegister(@PathVariable("category") String category,
-                                               Authentication authentication,
-                                               @RequestBody @Validated PostRegisterDto postRegisterDto){
+    public ResponseEntity<SuccessResponseDto<PostDto>> postRegister(@PathVariable("category") String category,
+                                                           Authentication authentication,
+                                                           @RequestBody @Validated PostRegisterDto postRegisterDto){
         String loginId = controllerUtil.getAuthorizedLoginId(authentication);
-        Long l = postService.postSave(loginId,category, postRegisterDto);
-        return ResponseEntity.ok("test");
+        Long postId = postService.postSave(loginId,category, postRegisterDto);
+        PostDto postDto = postQueryService.postInfo(postId);
+        SuccessResponseDto<PostDto> successResponse =
+                controllerUtil.createSuccessResponse(postDto, HttpServletResponse.SC_OK);
+        return ResponseEntity.ok(successResponse);
     }
 }
