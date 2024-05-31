@@ -2,9 +2,10 @@ package com.devmate.apiserver.service.post;
 
 import com.devmate.apiserver.domain.*;
 import com.devmate.apiserver.dto.post.request.PostRegisterDto;
+import com.devmate.apiserver.dto.post.request.RegisterDto;
+import com.devmate.apiserver.dto.post.request.StudyRegisterDto;
 import com.devmate.apiserver.repository.post.HashTagRepository;
 import com.devmate.apiserver.repository.MemberRepository;
-import com.devmate.apiserver.repository.post.PostHashTagRepository;
 import com.devmate.apiserver.repository.post.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,30 +25,26 @@ public class PostService {
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
     private final HashTagRepository hashTagRepository;
-    private final PostHashTagRepository postHashTagRepository;
     public Long postSave(String loginId, String category, PostRegisterDto postRegisterDto){
         Member member = memberRepository.findByLoginId(loginId).orElseThrow(
                 () -> new NoSuchElementException("member not exist"));
         Post postByCategory = getPostByCategory(member, category, postRegisterDto);
-        Post savedPost = postRepository.save(postByCategory);
 
         if(!postRegisterDto.getTags().isEmpty()){
             List<String> tags = postRegisterDto.getTags();
             for (String tag : tags) {
                 Optional<HashTag> findHashtag = hashTagRepository.findByName(tag);
-                PostHashTag postHashTag;
                 if(findHashtag.isPresent()){
-                    postHashTag = new PostHashTag(savedPost, findHashtag.get());
+                    new PostHashTag(postByCategory, findHashtag.get());
                 }
                 else{
                     HashTag hashTag = new HashTag(tag);
                     HashTag savedHashTag = hashTagRepository.save(hashTag);
-                    postHashTag = new PostHashTag(savedPost, savedHashTag);
+                    new PostHashTag(postByCategory, savedHashTag);
                 }
-                postHashTagRepository.save(postHashTag);
             }
         }
-
+        Post savedPost = postRepository.save(postByCategory);
         return savedPost.getId();
     }
 

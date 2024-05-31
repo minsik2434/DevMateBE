@@ -10,5 +10,12 @@ import java.util.List;
 
 @Getter
 @Setter
-public class PostRegisterDto extends RegisterDto{
+public abstract class RegisterDto {
+    @NotBlank
+    private String title;
+    @NotBlank
+    private String content;
+    @UniqueElements
+    @Size(max = 4, message = "Size must be 4 or less")
+    private List<String> tags;
 }

@@ -1,10 +1,12 @@
 package com.devmate.apiserver.domain;
 
 import com.devmate.apiserver.dto.post.request.PostRegisterDto;
+import com.devmate.apiserver.dto.post.request.RegisterDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -15,6 +17,7 @@ import java.util.List;
 @DiscriminatorColumn
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@ToString
 public abstract class Post {
     @Id @GeneratedValue
     @Column(name = "post_id")
@@ -31,7 +34,7 @@ public abstract class Post {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post",cascade = {CascadeType.PERSIST,CascadeType.REMOVE}, orphanRemoval = true)
     private List<PostHashTag> postHashTag = new ArrayList<>();
 
     public Post(Member member, PostRegisterDto postRegisterDto){

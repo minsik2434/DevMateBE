@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,9 +19,10 @@ public class PostQueryService {
     private final PostRepository postRepository;
 
     public PostDto postInfo(Long postId){
-        Post post = postRepository.findById(postId).orElseThrow(
-                ()-> new NoSuchElementException("Post Not Found"));
-        PostDto postDto = new PostDto(post);
-        return postDto;
+        Optional<Post> postAndMemberAndTags = postRepository.findPostAndMemberAndTagsById(postId);
+        Post post = postAndMemberAndTags.orElseGet(() -> postRepository.findById(postId).orElseThrow(
+                () -> new NoSuchElementException("Not Found Post")));
+
+        return new PostDto(post);
     }
 }
