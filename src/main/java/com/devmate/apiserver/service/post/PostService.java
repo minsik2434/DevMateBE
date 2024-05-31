@@ -1,10 +1,12 @@
-package com.devmate.apiserver.service;
+package com.devmate.apiserver.service.post;
 
 import com.devmate.apiserver.domain.*;
+import com.devmate.apiserver.dto.post.request.MentoringRegisterDto;
 import com.devmate.apiserver.dto.post.request.PostRegisterDto;
+import com.devmate.apiserver.dto.post.request.RegisterDto;
+import com.devmate.apiserver.dto.post.request.StudyRegisterDto;
 import com.devmate.apiserver.repository.post.HashTagRepository;
 import com.devmate.apiserver.repository.MemberRepository;
-import com.devmate.apiserver.repository.post.PostHashTagRepository;
 import com.devmate.apiserver.repository.post.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,46 +26,48 @@ public class PostService {
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
     private final HashTagRepository hashTagRepository;
-    private final PostHashTagRepository postHashTagRepository;
-    public Long postSave(String loginId, String category, PostRegisterDto postRegisterDto){
+    public <T extends RegisterDto> Long postSave(String loginId, String category, T registerDto){
         Member member = memberRepository.findByLoginId(loginId).orElseThrow(
-                () -> new NoSuchElementException("member not exist"));
-        Post postByCategory = getPostByCategory(member, category, postRegisterDto);
-        Post savedPost = postRepository.save(postByCategory);
+                () -> new NoSuchElementException("Member Not Found"));
+        Post postByCategory = getPostByCategory(member, category, registerDto);
 
-        if(!postRegisterDto.getTags().isEmpty()){
-            List<String> tags = postRegisterDto.getTags();
+        if(!registerDto.getTags().isEmpty()){
+            List<String> tags = registerDto.getTags();
             for (String tag : tags) {
                 Optional<HashTag> findHashtag = hashTagRepository.findByName(tag);
                 if(findHashtag.isPresent()){
-                    PostHashTag postHashTag = new PostHashTag(savedPost, findHashtag.get());
-                    postHashTagRepository.save(postHashTag);
+                    new PostHashTag(postByCategory, findHashtag.get());
                 }
                 else{
                     HashTag hashTag = new HashTag(tag);
                     HashTag savedHashTag = hashTagRepository.save(hashTag);
-                    PostHashTag postHashTag = new PostHashTag(savedPost, savedHashTag);
-                    postHashTagRepository.save(postHashTag);
+                    new PostHashTag(postByCategory, savedHashTag);
                 }
             }
         }
-
+        Post savedPost = postRepository.save(postByCategory);
         return savedPost.getId();
     }
 
-    private Post getPostByCategory(Member member, String category, PostRegisterDto postRegisterDto){
+    private <T extends RegisterDto> Post getPostByCategory(Member member, String category, T registerDto){
         Post post;
         if(category.equals("qna")){
-            post = new Qna(member,postRegisterDto);
+            post = new Qna(member,(PostRegisterDto) registerDto);
         }
         else if(category.equals("community")){
-            post = new Community(member ,postRegisterDto);
+            post = new Community(member ,(PostRegisterDto) registerDto);
         }
         else if(category.equals("job")){
-            post = new JobOpening(member,postRegisterDto);
+            post = new JobOpening(member,(PostRegisterDto) registerDto);
         }
         else if(category.equals("review")){
-            post = new Review(member,postRegisterDto);
+            post = new Review(member,(PostRegisterDto) registerDto);
+        }
+        else if(category.equals("study")){
+            post = new Study(member, (StudyRegisterDto) registerDto);
+        }
+        else if(category.equals("mentoring")){
+            post = new Mento(member, (MentoringRegisterDto) registerDto);
         }
         else{
             throw new NoSuchElementException("Not Found Category");
