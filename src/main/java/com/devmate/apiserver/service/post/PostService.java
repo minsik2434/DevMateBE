@@ -1,6 +1,7 @@
 package com.devmate.apiserver.service.post;
 
 import com.devmate.apiserver.domain.*;
+import com.devmate.apiserver.dto.post.request.MentoringRegisterDto;
 import com.devmate.apiserver.dto.post.request.PostRegisterDto;
 import com.devmate.apiserver.dto.post.request.RegisterDto;
 import com.devmate.apiserver.dto.post.request.StudyRegisterDto;
@@ -25,13 +26,13 @@ public class PostService {
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
     private final HashTagRepository hashTagRepository;
-    public Long postSave(String loginId, String category, PostRegisterDto postRegisterDto){
+    public <T extends RegisterDto> Long postSave(String loginId, String category, T registerDto){
         Member member = memberRepository.findByLoginId(loginId).orElseThrow(
-                () -> new NoSuchElementException("member not exist"));
-        Post postByCategory = getPostByCategory(member, category, postRegisterDto);
+                () -> new NoSuchElementException("Member Not Found"));
+        Post postByCategory = getPostByCategory(member, category, registerDto);
 
-        if(!postRegisterDto.getTags().isEmpty()){
-            List<String> tags = postRegisterDto.getTags();
+        if(!registerDto.getTags().isEmpty()){
+            List<String> tags = registerDto.getTags();
             for (String tag : tags) {
                 Optional<HashTag> findHashtag = hashTagRepository.findByName(tag);
                 if(findHashtag.isPresent()){
@@ -48,19 +49,25 @@ public class PostService {
         return savedPost.getId();
     }
 
-    private Post getPostByCategory(Member member, String category, PostRegisterDto postRegisterDto){
+    private <T extends RegisterDto> Post getPostByCategory(Member member, String category, T registerDto){
         Post post;
         if(category.equals("qna")){
-            post = new Qna(member,postRegisterDto);
+            post = new Qna(member,(PostRegisterDto) registerDto);
         }
         else if(category.equals("community")){
-            post = new Community(member ,postRegisterDto);
+            post = new Community(member ,(PostRegisterDto) registerDto);
         }
         else if(category.equals("job")){
-            post = new JobOpening(member,postRegisterDto);
+            post = new JobOpening(member,(PostRegisterDto) registerDto);
         }
         else if(category.equals("review")){
-            post = new Review(member,postRegisterDto);
+            post = new Review(member,(PostRegisterDto) registerDto);
+        }
+        else if(category.equals("study")){
+            post = new Study(member, (StudyRegisterDto) registerDto);
+        }
+        else if(category.equals("mentoring")){
+            post = new Mento(member, (MentoringRegisterDto) registerDto);
         }
         else{
             throw new NoSuchElementException("Not Found Category");

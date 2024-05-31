@@ -19,19 +19,15 @@ public class MemberQueryService {
     private final MemberRepository memberRepository;
 
     public MemberDto getMemberInfoById(Long memberId){
-        log.info("memberInfoIdService start");
         Optional<Member> memberAndInterestsById = memberRepository.findMemberAndInterestsById(memberId);
         Member member = memberAndInterestsById.orElseGet(() -> memberRepository.findById(memberId).orElseThrow(() ->
                 new NoSuchElementException("Member Not Found")));
-        log.info("memberInfoIdService end");
         return new MemberDto(member);
     }
     public MemberDto getMemberInfoByLoginId(String loginId){
-        log.info("memberInfoLoginIdService start");
         Optional<Member> memberAndInterestsByLoginId = memberRepository.findMemberAndInterestsByLoginId(loginId);
         Member member = memberAndInterestsByLoginId.orElseGet(() -> memberRepository.findByLoginId(loginId).orElseThrow(() ->
                 new NoSuchElementException("Member Not Found")));
-        log.info("memberInfoLoginIdService end");
         return new MemberDto(member);
     }
 }

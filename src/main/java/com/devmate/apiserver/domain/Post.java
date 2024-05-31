@@ -37,13 +37,13 @@ public abstract class Post {
     @OneToMany(mappedBy = "post",cascade = {CascadeType.PERSIST,CascadeType.REMOVE}, orphanRemoval = true)
     private List<PostHashTag> postHashTag = new ArrayList<>();
 
-    public Post(Member member, PostRegisterDto postRegisterDto){
-        this.title = postRegisterDto.getTitle();
+    public <T extends RegisterDto>Post(Member member, T registerDto){
+        this.title = registerDto.getTitle();
         this.postingDateTime = LocalDateTime.now();
         this.viewCount = 0;
         this.goodCount = 0;
         this.commentCount = 0;
-        this.content = postRegisterDto.getContent();
+        this.content = registerDto.getContent();
         this.member = member;
     }
 }
