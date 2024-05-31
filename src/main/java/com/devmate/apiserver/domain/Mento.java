@@ -15,4 +15,12 @@ public class Mento extends Post{
     private Integer career;
     private String githubUrl;
 
+
+    public Mento(Member member, MentoringRegisterDto mentoringRegisterDto){
+        super(member, mentoringRegisterDto);
+        this.job = mentoringRegisterDto.getJob();
+        this.phoneNumber = mentoringRegisterDto.getPhoneNumber();
+        this.career = mentoringRegisterDto.getCareer();
+        this.githubUrl = mentoringRegisterDto.getGithubUrl();
+    }
 }
