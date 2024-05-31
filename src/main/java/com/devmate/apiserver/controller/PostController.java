@@ -3,6 +3,7 @@ package com.devmate.apiserver.controller;
 import com.devmate.apiserver.controller.util.ControllerUtil;
 import com.devmate.apiserver.dto.SuccessResponseDto;
 import com.devmate.apiserver.dto.post.request.PostRegisterDto;
+import com.devmate.apiserver.dto.post.request.StudyRegisterDto;
 import com.devmate.apiserver.dto.post.response.PostDto;
 import com.devmate.apiserver.service.post.PostQueryService;
 import com.devmate.apiserver.service.post.PostService;
