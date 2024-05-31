@@ -1,4 +1,4 @@
-package com.devmate.apiserver.service;
+package com.devmate.apiserver.service.member;
 
 import com.devmate.apiserver.common.exception.DuplicateResourceException;
 import com.devmate.apiserver.common.exception.IdOrPasswordIncorrectException;
@@ -77,7 +77,7 @@ public class MemberService {
     @Transactional
     public void deleteMember(String loginId){
         Optional<Member> optionalMember = memberRepository.findByLoginId(loginId);
-        optionalMember.orElseThrow(()-> new NoSuchElementException("member not exist"));
+        optionalMember.orElseThrow(()-> new NoSuchElementException("Member Not Found"));
         memberRepository.delete(optionalMember.get());
     }
 

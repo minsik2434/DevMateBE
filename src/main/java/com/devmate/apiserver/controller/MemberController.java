@@ -10,8 +10,8 @@ import com.devmate.apiserver.dto.member.request.EditProfileDto;
 import com.devmate.apiserver.dto.member.request.MemberRegisterDto;
 import com.devmate.apiserver.dto.member.request.SignInDto;
 import com.devmate.apiserver.dto.member.response.MemberDto;
-import com.devmate.apiserver.service.MemberQueryService;
-import com.devmate.apiserver.service.MemberService;
+import com.devmate.apiserver.service.member.MemberQueryService;
+import com.devmate.apiserver.service.member.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -39,7 +39,6 @@ public class MemberController {
 
     @GetMapping
     public ResponseEntity<SuccessResponseDto<MemberDto>> info(Authentication authentication){
-        log.info("findMemberInfo");
         String loginId = controllerUtil.getAuthorizedLoginId(authentication);
         MemberDto memberDto = memberQueryService.getMemberInfoByLoginId(loginId);
         SuccessResponseDto<MemberDto> successResponse =
