@@ -22,7 +22,6 @@ public class PostDto {
     private Integer commentCount;
     private List<String> tags = new ArrayList<>();
     private String writer;
-
     public PostDto(Post post){
         this.id = post.getId();
         this.title = post.getTitle();
