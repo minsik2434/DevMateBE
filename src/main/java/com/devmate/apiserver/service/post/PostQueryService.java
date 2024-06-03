@@ -1,17 +1,19 @@
 package com.devmate.apiserver.service.post;
 
-import com.devmate.apiserver.domain.Mento;
-import com.devmate.apiserver.domain.Post;
-import com.devmate.apiserver.domain.Study;
+import com.devmate.apiserver.domain.*;
 import com.devmate.apiserver.dto.post.response.MentoringDto;
 import com.devmate.apiserver.dto.post.response.PostDto;
 import com.devmate.apiserver.dto.post.response.StudyDto;
 import com.devmate.apiserver.repository.post.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -26,22 +28,27 @@ public class PostQueryService {
         Optional<Post> postAndMemberAndTags = postRepository.findPostAndMemberAndTagsById(postId);
         Post post = postAndMemberAndTags.orElseGet(() -> postRepository.findById(postId).orElseThrow(
                 () -> new NoSuchElementException("Not Found Post")));
-
-        return new PostDto(post);
+        return getPostDtoByType(post);
     }
 
-    public StudyDto studyInfo(Long postId){
-        Optional<Post> postAndMemberAndTags = postRepository.findPostAndMemberAndTagsById(postId);
-        Post post = postAndMemberAndTags.orElseGet(() -> postRepository.findById(postId).orElseThrow(
-                () -> new NoSuchElementException("Not Found Post")));
-        return new StudyDto((Study) post);
+    public Page<PostDto> postsFilterParam(String category, String sort, String search, String[] tags, int page){
+        Pageable pageable = PageRequest.of(page, 20);
+        Page<Post> postAllByParam = postRepository.findPostAllByParam(category, sort, search, tags, pageable);
+        return postAllByParam.map(this::getPostDtoByType);
     }
 
-    public MentoringDto mentoringInfo(Long postId){
-        Optional<Post> postAndMemberAndTags = postRepository.findPostAndMemberAndTagsById(postId);
-        Post post = postAndMemberAndTags.orElseGet(() -> postRepository.findById(postId).orElseThrow(
-                () -> new NoSuchElementException("Not Found Post")));
-        return new MentoringDto((Mento) post);
-    }
 
+    private PostDto getPostDtoByType(Post post){
+        PostDto postDto = null;
+        if(post instanceof Qna || post instanceof Review || post instanceof Community || post instanceof JobOpening){
+            postDto = new PostDto(post);
+        }
+        else if(post instanceof Study){
+            postDto = new StudyDto((Study) post);
+        }
+        else if(post instanceof Mento){
+            postDto = new MentoringDto((Mento) post);
+        }
+        return postDto;
+    }
 }

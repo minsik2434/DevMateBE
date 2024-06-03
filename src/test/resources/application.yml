@@ -15,3 +15,17 @@ spring:
 
 jwt:
   secret: 4f825379d86d10570287b521eee0bf24fbf40f5481091168eb4b295486d5a2f9
+
+cloud:
+  aws:
+    credentials:
+      secret-key: test
+      access-key: test123
+
+    s3:
+      bucketName: test123123
+    region:
+      static: 123123
+
+    stack:
+      auto: true
