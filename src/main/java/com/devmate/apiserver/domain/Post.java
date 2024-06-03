@@ -14,7 +14,7 @@ import java.util.List;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn
+@DiscriminatorColumn(name="dtype")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @ToString
@@ -27,6 +27,8 @@ public abstract class Post {
     private Integer viewCount;
     private Integer goodCount;
     private Integer commentCount;
+    @Column(name = "dtype" , insertable = false, updatable = false)
+    private String dType;
     @Lob
     private String content;
 
@@ -45,5 +47,9 @@ public abstract class Post {
         this.commentCount = 0;
         this.content = registerDto.getContent();
         this.member = member;
+    }
+
+    public void addViewCount(){
+        this.viewCount = viewCount + 1;
     }
 }
