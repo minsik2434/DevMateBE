@@ -23,4 +23,8 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Query("select distinct m from Member m join fetch m.memberInterests memberInterest " +
             "join fetch memberInterest.interest where m.id = :id")
     Optional<Member> findMemberAndInterestsById(@Param("id") Long id);
+
+    @Query("select distinct m from Member m join fetch m.memberInterests memberInterest " +
+            "join fetch memberInterest.interest where m.nickName = :nickName")
+    Optional<Member> findMemberAndInterestsByNickName(@Param("nickName") String nickName);
 }

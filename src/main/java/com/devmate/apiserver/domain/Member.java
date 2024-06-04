@@ -40,7 +40,7 @@ public class Member {
         this.name = memberRegisterDto.getName();
         this.nickName = memberRegisterDto.getNickName();
         this.experienced = memberRegisterDto.getExperienced();
-        this.profileImgUrl = "default.png";
+        this.profileImgUrl = "https://devmatebucket.s3.ap-northeast-2.amazonaws.com/profileDefault.png";
     }
 
     public void editMember(EditProfileDto editProfileDto){
