@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -58,17 +59,21 @@ class PostRepositoryTest {
         for (int i = 0; i <3; i++) {
             for (int j = 0; j < 10; j++) {
                 postRegisterDto.setTitle("테스트" + k + "(Qna)");
-                postRegisterDto.setContent("QnA" + k + "번째");
-                Qna qna = new Qna(member, postRegisterDto);
                 if (k < 10) {
+                    postRegisterDto.setContent("자바 질문");
+                    Qna qna = new Qna(member, postRegisterDto);
                     new PostHashTag(qna, hashTag1);
                     qnas.add(qna);
                 }
                 else if (k>10 && k<20){
+                    postRegisterDto.setContent("파이썬 질문");
+                    Qna qna = new Qna(member, postRegisterDto);
                     new PostHashTag(qna, hashTag2);
                     qnas.add(qna);
                 }
                 else {
+                    postRegisterDto.setContent("C 언어 질문");
+                    Qna qna = new Qna(member, postRegisterDto);
                     new PostHashTag(qna, hashTag1);
                     new PostHashTag(qna, hashTag2);
                     qnas.add(qna);
@@ -114,8 +119,8 @@ class PostRepositoryTest {
         for(int i=0; i<3; i++){
             for (int j = 0; j < 10; j++) {
                 mentoringRegisterDto.setTitle("테스트"+k+"(mentoring)");
-                mentoringRegisterDto.setContent("Mentoring"+k+"번째");
                 if (k < 10) {
+                    mentoringRegisterDto.setContent("자바 프로그래밍 멘토링");
                     mentoringRegisterDto.setCareer(4);
                     mentoringRegisterDto.setEmail("test" + k + "@naver.com");
                     mentoringRegisterDto.setJob("FrontEnd");
@@ -126,6 +131,7 @@ class PostRepositoryTest {
                     mentos.add(mento);
                 }
                 else if (k>10 && k<20){
+                    mentoringRegisterDto.setContent("파이썬 프로그래밍 멘토링");
                     mentoringRegisterDto.setCareer(3);
                     mentoringRegisterDto.setEmail("test" + k + "@naver.com");
                     mentoringRegisterDto.setJob("BackEnd");
@@ -136,6 +142,7 @@ class PostRepositoryTest {
                     mentos.add(mento);
                 }
                 else {
+                    mentoringRegisterDto.setContent("C언어 프로그래밍 멘토링");
                     mentoringRegisterDto.setCareer(3);
                     mentoringRegisterDto.setEmail("test" + k + "@naver.com");
                     mentoringRegisterDto.setJob("BackEnd");
@@ -158,7 +165,10 @@ class PostRepositoryTest {
     @Test
     void findPostAllByParamsTest(){
         Pageable pageable = PageRequest.of(0,20);
-        Page<Post> qna = postRepository.findPostAllByParam("qna", null, null, null, pageable);
+        HashTag hashTag = hashTagRepository.findByName("data").get();
+        Page<Post> qna = postRepository.findPostAllByParam("qna", null, "자바", new String[]{"java"}, pageable);
         assertThat(qna.getContent()).allMatch(item -> item instanceof Qna);
+        assertThat(qna.getContent()).allMatch(item -> item.getContent().contains("자바"));
+
     }
 }
