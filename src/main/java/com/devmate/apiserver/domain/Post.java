@@ -29,7 +29,9 @@ public abstract class Post {
     private Integer commentCount;
     @Column(name = "dtype" , insertable = false, updatable = false)
     private String dType;
+
     @Lob
+    @Column(columnDefinition = "LONGTEXT")
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
