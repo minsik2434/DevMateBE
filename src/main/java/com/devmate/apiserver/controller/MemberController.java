@@ -10,6 +10,7 @@ import com.devmate.apiserver.dto.member.request.EditProfileDto;
 import com.devmate.apiserver.dto.member.request.MemberRegisterDto;
 import com.devmate.apiserver.dto.member.request.SignInDto;
 import com.devmate.apiserver.dto.member.response.MemberDto;
+import com.devmate.apiserver.dto.member.response.SimpleMemberDto;
 import com.devmate.apiserver.service.member.MemberQueryService;
 import com.devmate.apiserver.service.member.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,6 +37,15 @@ public class MemberController {
     private final MemberService memberService;
     private final MemberQueryService memberQueryService;
     private final ControllerUtil controllerUtil;
+
+
+    @GetMapping("/{nickName}")
+    public ResponseEntity<SuccessResponseDto<SimpleMemberDto>> MemberByNickName(@PathVariable("nickName") String nickName){
+        SimpleMemberDto simpleMemberDto = memberQueryService.getSimpleMemberInfoByNickName(nickName);
+        SuccessResponseDto<SimpleMemberDto> successResponse =
+                controllerUtil.createSuccessResponse(simpleMemberDto, HttpServletResponse.SC_OK);
+        return ResponseEntity.ok().body(successResponse);
+    }
 
     @GetMapping
     public ResponseEntity<SuccessResponseDto<MemberDto>> info(Authentication authentication){
