@@ -4,6 +4,7 @@ import com.devmate.apiserver.domain.*;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
@@ -34,7 +35,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
 
         QueryResults<Post> results = queryFactory.selectFrom(post)
                 .join(post.member, member).fetchJoin()
-                .where(dTypeEq(category).and(titleOrContentLike(search)).and(tagFiltering(tags)))
+                .where(dTypeEq(category).and(titleOrContentLike(search)),tagFiltering(tags))
                 .orderBy(getOrderBy(sort))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -45,17 +46,18 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
     }
 
     private BooleanExpression tagFiltering(String[] tags) {
-        BooleanExpression tagCondition = null;
-        if (tags != null && tags.length > 0) {
-            tagCondition = post.id.in(
-                    JPAExpressions
-                            .select(postHashTag.post.id)
-                            .from(postHashTag)
-                            .join(postHashTag.hashTag, hashTag)
-                            .where(hashTag.name.in(tags))
-            );
+        if(tags == null || tags.length == 0){
+//            return Expressions.asBoolean(true).isTrue();
+            return null;
         }
-        return tagCondition;
+        return post.id.in(
+                JPAExpressions
+                        .select(postHashTag.post.id)
+                        .from(postHashTag)
+                        .join(postHashTag.hashTag, hashTag)
+                        .where(hashTag.name.in(tags))
+                        .groupBy(postHashTag.post.id)
+        );
     }
 
     private BooleanExpression dTypeEq(String category){
