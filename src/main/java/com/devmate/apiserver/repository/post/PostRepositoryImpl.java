@@ -4,7 +4,6 @@ import com.devmate.apiserver.domain.*;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
@@ -47,7 +46,6 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
 
     private BooleanExpression tagFiltering(String[] tags) {
         if(tags == null || tags.length == 0){
-//            return Expressions.asBoolean(true).isTrue();
             return null;
         }
         return post.id.in(
