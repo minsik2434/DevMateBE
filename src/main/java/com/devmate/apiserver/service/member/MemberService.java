@@ -43,6 +43,11 @@ public class MemberService {
         return memberRepository.findByNickName(nickName).isPresent();
     }
 
+    public Long getMemberIdByLoginId(String loginId){
+        Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new NoSuchElementException("Not Found Member"));
+        return member.getId();
+    }
+
     @Transactional
     public Long registerMember(MemberRegisterDto memberRegisterDto){
         Member member = new Member(memberRegisterDto,

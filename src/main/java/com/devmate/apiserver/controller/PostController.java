@@ -8,6 +8,7 @@ import com.devmate.apiserver.dto.post.request.StudyRegisterDto;
 import com.devmate.apiserver.dto.post.response.MentoringDto;
 import com.devmate.apiserver.dto.post.response.PostDto;
 import com.devmate.apiserver.dto.post.response.StudyDto;
+import com.devmate.apiserver.service.member.MemberService;
 import com.devmate.apiserver.service.post.PostQueryService;
 import com.devmate.apiserver.service.post.PostService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -31,6 +32,7 @@ public class PostController {
     private final ControllerUtil controllerUtil;
     private final PostService postService;
     private final PostQueryService postQueryService;
+    private final MemberService memberService;
     @PostMapping("/{category}")
     public ResponseEntity<SuccessResponseDto<PostDto>> postRegister(@PathVariable("category") String category,
                                                            Authentication authentication,
@@ -83,4 +85,21 @@ public class PostController {
         return ResponseEntity.ok(successResponse);
     }
 
+    @GetMapping("/member")
+    public ResponseEntity<SuccessResponseDto<Page<PostDto>>> postListByMember(Authentication authentication,
+                                                                              @RequestParam(value = "type") String type,
+                                                                              @RequestParam(value = "page", defaultValue = "0") int page){
+        String loginId = controllerUtil.getAuthorizedLoginId(authentication);
+        Long memberId = memberService.getMemberIdByLoginId(loginId);
+        Page<PostDto> postDtos = postQueryService.postsByMemberFilterParam(memberId, type, page);
+        SuccessResponseDto<Page<PostDto>> successResponse =
+                controllerUtil.createSuccessResponse(postDtos, HttpServletResponse.SC_OK);
+        return ResponseEntity.ok().body(successResponse);
+    }
+
+    @PostMapping("/{postId}/addview")
+    public ResponseEntity<Void> addViewCount(@PathVariable("postId") Long postId){
+        postService.addViewCount(postId);
+        return ResponseEntity.noContent().build();
+    }
 }

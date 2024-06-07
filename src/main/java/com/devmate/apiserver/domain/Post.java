@@ -50,6 +50,9 @@ public abstract class Post {
         this.content = registerDto.getContent();
         this.member = member;
     }
+    public void addCommentCount(){
+        this.commentCount = commentCount +1;
+    }
 
     public void addViewCount(){
         this.viewCount = viewCount + 1;
