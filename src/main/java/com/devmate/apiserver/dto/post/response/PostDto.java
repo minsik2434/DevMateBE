@@ -21,6 +21,7 @@ public class PostDto {
     private Integer viewCount;
     private Integer goodCount;
     private Integer commentCount;
+    private String category;
     private List<String> tags = new ArrayList<>();
     private Writer writer;
 
@@ -43,6 +44,7 @@ public class PostDto {
         this.viewCount = post.getViewCount();
         this.goodCount = post.getGoodCount();
         this.commentCount = post.getCommentCount();
+        this.category = post.getDType();
         this.writer = new Writer(post.getMember());
         for (PostHashTag postHashTag : post.getPostHashTag()) {
             tags.add(postHashTag.getHashTag().getName());
