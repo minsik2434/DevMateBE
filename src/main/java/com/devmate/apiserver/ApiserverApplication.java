@@ -23,10 +23,12 @@ public class ApiserverApplication {
 
 	@PostConstruct
 	public void initData(){
-		Member member = new Member("testId","testPassword","choiminsik",
+		Member member1 = new Member("testId","testPassword","choiminsik",
 				"minsik",true,"testUrl");
-
-		memberRepository.save(member);
+		Member member2 = new Member("testId2","testPassword","minsik",
+				"minsiiiki",true,"testUrl");
+		memberRepository.save(member1);
+		memberRepository.save(member2);
 
 		Interest interest1 = new Interest("AI");
 		Interest interest2 = new Interest("FrontEnd");

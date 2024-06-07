@@ -31,8 +31,8 @@ public class WebSecurityConfig implements WebMvcConfigurer{
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
-                        .requestMatchers(HttpMethod.POST, "/members/register", "/members/signin").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/members/**", "/interests/**","/post/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/members/register", "/members/signin","/post/{postId}/addview").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/members/**", "/interests/**","/post/**","/comments/**").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(new JwtAuthenticationFilter(provider), UsernamePasswordAuthenticationFilter.class)

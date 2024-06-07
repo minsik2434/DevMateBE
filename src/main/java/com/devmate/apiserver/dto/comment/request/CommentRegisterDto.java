@@ -9,5 +9,4 @@ import lombok.Setter;
 public class CommentRegisterDto {
     @NotBlank(message = "Comment Not Blank")
     private String comment;
-    private String test;
 }
