@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@DiscriminatorValue("jobOpening")
+@DiscriminatorValue("job")
 public class JobOpening extends Post{
 
     public JobOpening(Member member, PostRegisterDto postRegisterDto){
