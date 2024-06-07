@@ -29,6 +29,7 @@ public class CommentService {
 
         Comment comment = new Comment(member, post, commentRegisterDto);
         Comment savedComment = commentRepository.save(comment);
+        post.addCommentCount();
         return savedComment.getId();
     }
 }
