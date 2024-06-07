@@ -74,4 +74,9 @@ public class PostService {
         }
         return post;
     }
+
+    public void addViewCount(Long postId){
+        Post post = postRepository.findById(postId).orElseThrow(() -> new NoSuchElementException("Not Found Post"));
+        post.addViewCount();
+    }
 }

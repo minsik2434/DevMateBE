@@ -14,9 +14,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @RequiredArgsConstructor
-@RequestMapping("/comment")
+@RequestMapping("/comments")
 @Slf4j
 @RestController
 public class CommentController {
@@ -28,12 +30,18 @@ public class CommentController {
                                                                           @PathVariable("postId") Long postId,
                                                                           @RequestBody @Validated CommentRegisterDto commentRegisterDto){
         String loginId = controllerUtil.getAuthorizedLoginId(authentication);
-        log.info(commentRegisterDto.getComment());
-        log.info("{}",commentRegisterDto.getTest());
         Long commentId = commentService.commentSave(loginId, postId, commentRegisterDto);
         CommentDto commentDto = commentQueryService.getCommentDto(commentId);
         SuccessResponseDto<CommentDto> successResponse =
                 controllerUtil.createSuccessResponse(commentDto, HttpServletResponse.SC_OK);
+        return ResponseEntity.ok(successResponse);
+    }
+
+    @GetMapping("/{postId}")
+    public ResponseEntity<SuccessResponseDto<List<CommentDto>>> commentList(@PathVariable("postId") Long postId){
+        List<CommentDto> commentList = commentQueryService.getCommentList(postId);
+        SuccessResponseDto<List<CommentDto>> successResponse =
+                controllerUtil.createSuccessResponse(commentList, HttpServletResponse.SC_OK);
         return ResponseEntity.ok(successResponse);
     }
 }

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import static com.devmate.apiserver.domain.QComment.comment;
 import static com.devmate.apiserver.domain.QHashTag.hashTag;
 import static com.devmate.apiserver.domain.QMember.member;
 import static com.devmate.apiserver.domain.QPost.post;
@@ -23,6 +24,7 @@ import static com.devmate.apiserver.domain.QPostHashTag.postHashTag;
 public class PostRepositoryImpl implements PostRepositoryCustom{
     QPost qPost = post;
     QMember qMember = member;
+    QComment qComment = comment;
     QPostHashTag qPostHashTag = postHashTag;
     QHashTag qHashTag = hashTag;
     private final JPAQueryFactory queryFactory;
@@ -42,6 +44,39 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
         List<Post> content = results.getResults();
         long totalCount = results.getTotal();
         return new PageImpl<>(content , pageable, totalCount);
+    }
+
+
+    //Todo 좋아요한 글 조회 기능 추가 예정
+    @Override
+    public Page<Post> findPostAllByMemberFilterParam(Long memberId, String type , Pageable pageable){
+
+        QueryResults<Post> results = queryFactory.selectFrom(post)
+                .join(post.member, member).fetchJoin()
+                .where(filterType(memberId,type))
+                .orderBy(post.postingDateTime.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+        List<Post> content = results.getResults();
+        long totalCount = results.getTotal();
+        return new PageImpl<>(content,pageable,totalCount);
+    }
+
+
+    private BooleanExpression filterType(Long memberId, String type){
+        if(type.equals("post")){
+            return post.member.id.eq(memberId);
+        }
+        else if(type.equals("comment")){
+            return post.id.in(
+                    JPAExpressions
+                            .select(comment.post.id)
+                            .from(comment)
+                            .where(comment.member.id.eq(memberId))
+                            .groupBy(comment.post.id));
+        }
+        return null;
     }
 
     private BooleanExpression tagFiltering(String[] tags) {

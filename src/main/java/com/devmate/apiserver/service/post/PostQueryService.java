@@ -4,6 +4,7 @@ import com.devmate.apiserver.domain.*;
 import com.devmate.apiserver.dto.post.response.MentoringDto;
 import com.devmate.apiserver.dto.post.response.PostDto;
 import com.devmate.apiserver.dto.post.response.StudyDto;
+import com.devmate.apiserver.repository.MemberRepository;
 import com.devmate.apiserver.repository.post.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +38,11 @@ public class PostQueryService {
         return postAllByParam.map(this::getPostDtoByType);
     }
 
+    public Page<PostDto> postsByMemberFilterParam(Long memberId, String type, int page){
+        Pageable pageable = PageRequest.of(page, 20);
+        Page<Post> postList = postRepository.findPostAllByMemberFilterParam(memberId, type, pageable);
+        return postList.map(this::getPostDtoByType);
+    }
 
     private PostDto getPostDtoByType(Post post){
         PostDto postDto = null;
