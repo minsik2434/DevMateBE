@@ -3,6 +3,7 @@ package com.devmate.apiserver.common;
 import com.devmate.apiserver.common.exception.ConfirmPasswordNotMatchException;
 import com.devmate.apiserver.common.exception.DuplicateResourceException;
 import com.devmate.apiserver.common.exception.IdOrPasswordIncorrectException;
+import com.devmate.apiserver.common.exception.LackOfPermissionException;
 import com.devmate.apiserver.dto.FailResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -57,6 +58,13 @@ public class ControllerAdvice {
         FailResponseDto failResponseDto = getFailResponseDto(ex, request, HttpStatus.CONFLICT,
                 HttpServletResponse.SC_CONFLICT);
         return ResponseEntity.status(HttpStatus.CONFLICT).body(failResponseDto);
+    }
+
+    @ExceptionHandler(LackOfPermissionException.class)
+    public ResponseEntity<FailResponseDto> handleLackOfPermissionException(LackOfPermissionException ex, HttpServletRequest request){
+        FailResponseDto failResponseDto = getFailResponseDto(ex, request, HttpStatus.UNAUTHORIZED,
+                HttpServletResponse.SC_UNAUTHORIZED);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(failResponseDto);
     }
     private FailResponseDto getFailResponseDto(Exception ex, HttpServletRequest request, HttpStatus httpStatus,
                                                int errorCode) {
