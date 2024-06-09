@@ -2,7 +2,7 @@ package com.devmate.apiserver.controller;
 
 import com.devmate.apiserver.controller.util.ControllerUtil;
 import com.devmate.apiserver.dto.SuccessResponseDto;
-import com.devmate.apiserver.dto.comment.request.CommentRegisterDto;
+import com.devmate.apiserver.dto.comment.request.CommentRequestDto;
 import com.devmate.apiserver.dto.comment.response.CommentDto;
 import com.devmate.apiserver.service.CommentQueryService;
 import com.devmate.apiserver.service.CommentService;
@@ -28,9 +28,9 @@ public class CommentController {
     @PostMapping("/{postId}")
     public ResponseEntity<SuccessResponseDto<CommentDto>> commentRegister(Authentication authentication,
                                                                           @PathVariable("postId") Long postId,
-                                                                          @RequestBody @Validated CommentRegisterDto commentRegisterDto){
+                                                                          @RequestBody @Validated CommentRequestDto commentRequestDto){
         String loginId = controllerUtil.getAuthorizedLoginId(authentication);
-        Long commentId = commentService.commentSave(loginId, postId, commentRegisterDto);
+        Long commentId = commentService.commentSave(loginId, postId, commentRequestDto);
         CommentDto commentDto = commentQueryService.getCommentDto(commentId);
         SuccessResponseDto<CommentDto> successResponse =
                 controllerUtil.createSuccessResponse(commentDto, HttpServletResponse.SC_OK);
@@ -43,5 +43,25 @@ public class CommentController {
         SuccessResponseDto<List<CommentDto>> successResponse =
                 controllerUtil.createSuccessResponse(commentList, HttpServletResponse.SC_OK);
         return ResponseEntity.ok(successResponse);
+    }
+
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity<Void> deleteComment(Authentication authentication,
+                                              @PathVariable("commentId") Long commentId){
+        String loginId = controllerUtil.getAuthorizedLoginId(authentication);
+        commentService.commentDelete(loginId,commentId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{commentId}")
+    public ResponseEntity<SuccessResponseDto<CommentDto>> editComment(Authentication authentication,
+                                                                      @PathVariable("commentId") Long commentId,
+                                                                      @RequestBody @Validated CommentRequestDto commentRequestDto){
+        String loginId = controllerUtil.getAuthorizedLoginId(authentication);
+        Long editCommentId = commentService.commentEdit(loginId, commentId, commentRequestDto);
+        CommentDto commentDto = commentQueryService.getCommentDto(editCommentId);
+        SuccessResponseDto<CommentDto> successResponse =
+                controllerUtil.createSuccessResponse(commentDto, HttpServletResponse.SC_OK);
+        return ResponseEntity.ok().body(successResponse);
     }
 }
