@@ -1,6 +1,6 @@
 package com.devmate.apiserver.domain;
 
-import com.devmate.apiserver.dto.comment.request.CommentRegisterDto;
+import com.devmate.apiserver.dto.comment.request.CommentRequestDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -29,10 +29,14 @@ public class Comment {
     private String commentBody;
     private LocalDateTime commentDateTime;
 
-    public Comment(Member member, Post post, CommentRegisterDto commentRegisterDto){
+    public Comment(Member member, Post post, CommentRequestDto commentRequestDto){
         this.member = member;
         this.post = post;
-        this.commentBody = commentRegisterDto.getComment();
+        this.commentBody = commentRequestDto.getComment();
         this.commentDateTime = LocalDateTime.now();
+    }
+
+    public void changeContent(String content){
+        this.commentBody = content;
     }
 }
