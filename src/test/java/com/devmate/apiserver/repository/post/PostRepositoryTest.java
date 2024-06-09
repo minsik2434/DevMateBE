@@ -1,10 +1,8 @@
 package com.devmate.apiserver.repository.post;
 
 import com.devmate.apiserver.domain.*;
-import com.devmate.apiserver.dto.comment.request.CommentRegisterDto;
-import com.devmate.apiserver.dto.post.request.MentoringRegisterDto;
+import com.devmate.apiserver.dto.comment.request.CommentRequestDto;
 import com.devmate.apiserver.dto.post.request.PostRegisterDto;
-import com.devmate.apiserver.dto.post.request.StudyRegisterDto;
 import com.devmate.apiserver.repository.CommentRepository;
 import com.devmate.apiserver.repository.MemberRepository;
 import jakarta.persistence.EntityManager;
@@ -96,18 +94,18 @@ class PostRepositoryTest {
         List<Qna> qnas = postRepository.saveAll(initQna);
         Member member1 = memberRepository.findById(1L).get();
         Member member2 = memberRepository.findById(2L).get();
-        CommentRegisterDto commentRegisterDto = new CommentRegisterDto();
-        commentRegisterDto.setComment("qna 댓글 테스트 입니다");
+        CommentRequestDto commentRequestDto = new CommentRequestDto();
+        commentRequestDto.setComment("qna 댓글 테스트 입니다");
         Qna qna = qnas.get(3);
         Qna qna1 = qnas.get(4);
 
         Qna qna2 = qnas.get(7);
         Qna qna3 = qnas.get(8);
-        Comment comment = new Comment(member2, qna,commentRegisterDto);
-        Comment comment1 = new Comment(member2, qna1, commentRegisterDto);
+        Comment comment = new Comment(member2, qna, commentRequestDto);
+        Comment comment1 = new Comment(member2, qna1, commentRequestDto);
 
-        Comment comment2 = new Comment(member1, qna2, commentRegisterDto);
-        Comment comment3 = new Comment(member1, qna3, commentRegisterDto);
+        Comment comment2 = new Comment(member1, qna2, commentRequestDto);
+        Comment comment3 = new Comment(member1, qna3, commentRequestDto);
 
 
         commentRepository.save(comment);

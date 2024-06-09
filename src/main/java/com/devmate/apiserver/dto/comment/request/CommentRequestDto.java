@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class CommentRegisterDto {
+public class CommentRequestDto {
     @NotBlank(message = "Comment Not Blank")
     private String comment;
 }
