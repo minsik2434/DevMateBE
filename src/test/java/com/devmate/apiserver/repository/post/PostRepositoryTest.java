@@ -2,7 +2,7 @@ package com.devmate.apiserver.repository.post;
 
 import com.devmate.apiserver.domain.*;
 import com.devmate.apiserver.dto.comment.request.CommentRequestDto;
-import com.devmate.apiserver.dto.post.request.PostRegisterDto;
+import com.devmate.apiserver.dto.post.request.PostRequestDto;
 import com.devmate.apiserver.repository.CommentRepository;
 import com.devmate.apiserver.repository.MemberRepository;
 import jakarta.persistence.EntityManager;
@@ -45,7 +45,7 @@ class PostRepositoryTest {
     void initData(){
         Member member = memberRepository.findById(1L).get();
         for(int i=0; i<10; i++){
-            PostRegisterDto postRegisterDto = new PostRegisterDto();
+            PostRequestDto postRegisterDto = new PostRequestDto();
             postRegisterDto.setTitle("qna"+i);
             postRegisterDto.setContent("qna"+i+"번 입니다");
             Qna qna = new Qna(member, postRegisterDto);

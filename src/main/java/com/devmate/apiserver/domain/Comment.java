@@ -34,6 +34,7 @@ public class Comment {
         this.post = post;
         this.commentBody = commentRequestDto.getComment();
         this.commentDateTime = LocalDateTime.now();
+        post.getComments().add(this);
     }
 
     public void changeContent(String content){
