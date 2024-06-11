@@ -6,5 +6,5 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class PostRegisterDto extends RegisterDto{
+public class PostRequestDto extends RequestDto {
 }

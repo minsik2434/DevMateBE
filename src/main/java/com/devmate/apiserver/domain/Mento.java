@@ -1,6 +1,6 @@
 package com.devmate.apiserver.domain;
 
-import com.devmate.apiserver.dto.post.request.MentoringRegisterDto;
+import com.devmate.apiserver.dto.post.request.MentoringRequestDto;
 import jakarta.persistence.Entity;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -16,11 +16,19 @@ public class Mento extends Post{
     private String githubUrl;
 
 
-    public Mento(Member member, MentoringRegisterDto mentoringRegisterDto){
+    public Mento(Member member, MentoringRequestDto mentoringRegisterDto){
         super(member, mentoringRegisterDto);
         this.job = mentoringRegisterDto.getJob();
         this.phoneNumber = mentoringRegisterDto.getPhoneNumber();
         this.career = mentoringRegisterDto.getCareer();
         this.githubUrl = mentoringRegisterDto.getGithubUrl();
+    }
+
+    public void editMento(MentoringRequestDto mentoringEditDto){
+        super.editPost(mentoringEditDto);
+        this.job = mentoringEditDto.getJob();
+        this.phoneNumber = mentoringEditDto.getPhoneNumber();
+        this.career = mentoringEditDto.getCareer();
+        this.githubUrl = mentoringEditDto.getGithubUrl();
     }
 }
