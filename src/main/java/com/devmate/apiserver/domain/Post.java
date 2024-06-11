@@ -1,7 +1,6 @@
 package com.devmate.apiserver.domain;
 
-import com.devmate.apiserver.dto.post.request.PostRegisterDto;
-import com.devmate.apiserver.dto.post.request.RegisterDto;
+import com.devmate.apiserver.dto.post.request.RequestDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -41,7 +40,9 @@ public abstract class Post {
     @OneToMany(mappedBy = "post",cascade = {CascadeType.PERSIST,CascadeType.REMOVE}, orphanRemoval = true)
     private List<PostHashTag> postHashTag = new ArrayList<>();
 
-    public <T extends RegisterDto>Post(Member member, T registerDto){
+    @OneToMany(mappedBy = "post",cascade = CascadeType.REMOVE)
+    private List<Comment> comments = new ArrayList<>();
+    public <T extends RequestDto>Post(Member member, T registerDto){
         this.title = registerDto.getTitle();
         this.postingDateTime = LocalDateTime.now();
         this.viewCount = 0;
@@ -53,8 +54,18 @@ public abstract class Post {
     public void addCommentCount(){
         this.commentCount = commentCount +1;
     }
-
+    public void disCommentCount() {
+        if(this.commentCount > 0){
+            this.commentCount = commentCount - 1;
+        }
+    }
     public void addViewCount(){
         this.viewCount = viewCount + 1;
     }
+
+    public <T extends RequestDto> void editPost(T editDto){
+        this.title = editDto.getTitle();
+        this.content = editDto.getContent();
+    }
+
 }

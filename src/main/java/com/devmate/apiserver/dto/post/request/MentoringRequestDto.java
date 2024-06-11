@@ -9,7 +9,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class MentoringRegisterDto extends RegisterDto{
+public class MentoringRequestDto extends RequestDto {
     @NotBlank
     @Pattern(regexp = "^\\d{2,3}-\\d{3,4}-\\d{4}$", message = "Pattern does not fit")
     private String phoneNumber;
