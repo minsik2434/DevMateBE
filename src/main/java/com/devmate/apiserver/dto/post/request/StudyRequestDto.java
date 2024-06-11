@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class StudyRegisterDto extends RegisterDto{
+public class StudyRequestDto extends RequestDto {
     @Min(1)
     @Max(4)
     @NotNull(message = "recruitCount Not Null")

@@ -1,6 +1,6 @@
 package com.devmate.apiserver.domain;
 
-import com.devmate.apiserver.dto.post.request.PostRegisterDto;
+import com.devmate.apiserver.dto.post.request.PostRequestDto;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import lombok.AccessLevel;
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @DiscriminatorValue("review")
 public class Review extends Post{
 
-    public Review(Member member,PostRegisterDto postRegisterDto){
+    public Review(Member member, PostRequestDto postRegisterDto){
         super(member,postRegisterDto);
     }
 }

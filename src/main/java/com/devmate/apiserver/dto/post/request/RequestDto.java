@@ -11,7 +11,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public abstract class RegisterDto {
+public abstract class RequestDto {
     @NotBlank
     private String title;
     @NotBlank
