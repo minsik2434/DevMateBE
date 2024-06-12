@@ -104,7 +104,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
         if(search == null || search.isBlank()){
             return null;
         }
-        return post.title.contains(search).or(post.content.like(search));
+        return post.title.contains(search).or(post.content.contains(search));
     }
     private OrderSpecifier<?>[] getOrderBy(String sort) {
         OrderSpecifier<?>[] orders;
