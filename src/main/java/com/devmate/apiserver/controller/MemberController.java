@@ -28,6 +28,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.NoSuchElementException;
+
 @Tag(name = "회원 컨트롤러", description = "회원 API")
 @RestController
 @RequiredArgsConstructor
@@ -54,6 +56,30 @@ public class MemberController {
         SuccessResponseDto<MemberDto> successResponse =
                 controllerUtil.createSuccessResponse(memberDto, HttpServletResponse.SC_OK);
         return ResponseEntity.ok().body(successResponse);
+    }
+
+    @GetMapping("/{value}/check")
+    public ResponseEntity<SuccessResponseDto<String>> duplicateLoginId(@PathVariable("value") String value,
+                                                                       @RequestParam("type") String type){
+        boolean isCheck;
+        if(type.equals("loginId")){
+            isCheck = memberService.isDuplicateLoginId(value);
+            log.info("{}",isCheck);
+        }
+        else if(type.equals("nickName")){
+            isCheck = memberService.isDuplicateNickName(value);
+        }
+        else{
+            throw new NoSuchElementException("Not Found Type");
+        }
+        SuccessResponseDto<String> successResponse;
+        if(isCheck){
+            successResponse = controllerUtil.createSuccessResponse("Duplicate",HttpServletResponse.SC_OK);
+        }
+        else{
+            successResponse =controllerUtil.createSuccessResponse("Not Duplicate",HttpServletResponse.SC_OK);
+        }
+        return ResponseEntity.ok(successResponse);
     }
 
     @Operation(summary = "회원 등록", description = "비밀번호와 비밀번호 확인이 일치해야함, 이미 존재하는 ID 사용 불가, 이미 존재하는 닉네임 사용 불가")
