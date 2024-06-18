@@ -1,7 +1,7 @@
 package com.devmate.apiserver.domain;
 
-import com.devmate.apiserver.dto.post.request.RequestDto;
 import com.devmate.apiserver.dto.post.request.StudyRequestDto;
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Slf4j
+@DiscriminatorValue("study")
 public class Study extends Post{
     private Integer recruitCount;
     private String proceed;

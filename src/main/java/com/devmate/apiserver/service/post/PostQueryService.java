@@ -33,13 +33,13 @@ public class PostQueryService {
     }
 
     public Page<PostDto> postsFilterParam(String category, String sort, String search, String[] tags, int page){
-        Pageable pageable = PageRequest.of(page, 20);
+        Pageable pageable = PageRequest.of(page, 10);
         Page<Post> postAllByParam = postRepository.findPostAllByParam(category, sort, search, tags, pageable);
         return postAllByParam.map(this::getPostDtoByType);
     }
 
     public Page<PostDto> postsByMemberFilterParam(Long memberId, String type, int page){
-        Pageable pageable = PageRequest.of(page, 20);
+        Pageable pageable = PageRequest.of(page, 10);
         Page<Post> postList = postRepository.findPostAllByMemberFilterParam(memberId, type, pageable);
         return postList.map(this::getPostDtoByType);
     }

@@ -1,9 +1,12 @@
 package com.devmate.apiserver;
 
+import com.devmate.apiserver.controller.PostController;
 import com.devmate.apiserver.domain.Interest;
 import com.devmate.apiserver.domain.Member;
+import com.devmate.apiserver.dto.post.request.PostRequestDto;
 import com.devmate.apiserver.repository.InterestRepository;
 import com.devmate.apiserver.repository.MemberRepository;
+import com.devmate.apiserver.service.post.PostService;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -17,6 +20,8 @@ public class ApiserverApplication {
 	@Autowired MemberRepository memberRepository;
 	@Autowired
 	InterestRepository interestRepository;
+	@Autowired
+	PostService postService;
 	public static void main(String[] args) {
 		SpringApplication.run(ApiserverApplication.class, args);
 	}
