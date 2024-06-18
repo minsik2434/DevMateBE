@@ -25,6 +25,15 @@ public class Member {
     private String profileImgUrl;
     @OneToMany(mappedBy = "member", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<MemberInterest> memberInterests = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    private List<Post> writePosts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    private List<Comment> writeComments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    private List<Good> goods = new ArrayList<>();
     public Member(String loginId, String password, String name, String nickName, boolean experienced, String profileImgUrl) {
         this.loginId = loginId;
         this.password = password;
