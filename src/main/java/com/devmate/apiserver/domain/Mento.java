@@ -14,6 +14,7 @@ public class Mento extends Post{
     private String phoneNumber;
     private Integer career;
     private String githubUrl;
+    private String email;
 
 
     public Mento(Member member, MentoringRequestDto mentoringRegisterDto){
@@ -22,6 +23,7 @@ public class Mento extends Post{
         this.phoneNumber = mentoringRegisterDto.getPhoneNumber();
         this.career = mentoringRegisterDto.getCareer();
         this.githubUrl = mentoringRegisterDto.getGithubUrl();
+        this.email = mentoringRegisterDto.getEmail();
     }
 
     public void editMento(MentoringRequestDto mentoringEditDto){
@@ -30,5 +32,6 @@ public class Mento extends Post{
         this.phoneNumber = mentoringEditDto.getPhoneNumber();
         this.career = mentoringEditDto.getCareer();
         this.githubUrl = mentoringEditDto.getGithubUrl();
+        this.email = mentoringEditDto.getEmail();
     }
 }

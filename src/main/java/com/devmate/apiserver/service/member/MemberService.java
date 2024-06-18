@@ -7,10 +7,14 @@ import com.devmate.apiserver.common.jwt.JwtTokenProvider;
 import com.devmate.apiserver.domain.Interest;
 import com.devmate.apiserver.domain.Member;
 import com.devmate.apiserver.domain.MemberInterest;
+import com.devmate.apiserver.domain.Post;
 import com.devmate.apiserver.dto.member.request.EditProfileDto;
 import com.devmate.apiserver.dto.member.request.MemberRegisterDto;
+import com.devmate.apiserver.repository.CommentRepository;
+import com.devmate.apiserver.repository.GoodRepository;
 import com.devmate.apiserver.repository.InterestRepository;
 import com.devmate.apiserver.repository.MemberRepository;
+import com.devmate.apiserver.repository.post.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -21,8 +25,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +35,9 @@ import java.util.Optional;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final InterestRepository interestRepository;
+    private final CommentRepository commentRepository;
+    private final PostRepository postRepository;
+    private final GoodRepository goodRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider provider;
@@ -81,9 +88,18 @@ public class MemberService {
 
     @Transactional
     public void deleteMember(String loginId){
-        Optional<Member> optionalMember = memberRepository.findByLoginId(loginId);
-        optionalMember.orElseThrow(()-> new NoSuchElementException("Member Not Found"));
-        memberRepository.delete(optionalMember.get());
+        Member member = memberRepository.findByLoginId(loginId).orElseThrow(() ->
+                new NoSuchElementException("Not Found Member"));
+        List<Post> postByMemberComment = postRepository.findPostByMemberComment(member);
+        List<Post> postsByMemberGood = postRepository.findPostsByMemberGood(member);
+        for (Post post : postByMemberComment) {
+            int commentCount = commentRepository.countByCommentByMemberPost(post, member);
+            post.changeCommentCount(commentCount);
+        }
+        for (Post post : postsByMemberGood) {
+            post.disGoodCount();
+        }
+        memberRepository.delete(member);
     }
 
     @Transactional

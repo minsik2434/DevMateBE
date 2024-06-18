@@ -19,6 +19,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.NoSuchElementException;
+
 @RestController
 @RequestMapping("/post")
 @RequiredArgsConstructor
@@ -80,6 +82,7 @@ public class PostController {
         return ResponseEntity.ok(successResponse);
     }
 
+
     @GetMapping("/member")
     public ResponseEntity<SuccessResponseDto<Page<PostDto>>> postListByMember(Authentication authentication,
                                                                               @RequestParam(value = "type") String type,
@@ -106,12 +109,40 @@ public class PostController {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/{postId}")
+    @PatchMapping("/{postId}/{category}")
     public ResponseEntity<SuccessResponseDto<PostDto>> postEdit(Authentication authentication,
                                                                 @PathVariable("postId") Long postId,
+                                                                @PathVariable("category") String category,
                                                                 @RequestBody PostRequestDto postEditDto){
+        if(!(category.equals("qna") || category.equals("review")|| category.equals("job") || category.equals("community"))){
+            throw new NoSuchElementException("Not Found Category");
+        }
         String loginId = controllerUtil.getAuthorizedLoginId(authentication);
         Long editPostId = postService.editPost(loginId, postId, postEditDto);
+        PostDto postDto = postQueryService.postInfo(editPostId);
+        SuccessResponseDto<PostDto> successResponse =
+                controllerUtil.createSuccessResponse(postDto, HttpServletResponse.SC_OK);
+        return ResponseEntity.ok(successResponse);
+    }
+
+    @PatchMapping("/{postId}/study")
+    public ResponseEntity<SuccessResponseDto<PostDto>> studyEdit(Authentication authentication,
+                                                                 @PathVariable("postId") Long postId,
+                                                                 @RequestBody StudyRequestDto studyRequestDto){
+        String loginId = controllerUtil.getAuthorizedLoginId(authentication);
+        Long editPostId = postService.editPost(loginId, postId, studyRequestDto);
+        PostDto postDto = postQueryService.postInfo(editPostId);
+        SuccessResponseDto<PostDto> successResponse =
+                controllerUtil.createSuccessResponse(postDto, HttpServletResponse.SC_OK);
+        return ResponseEntity.ok(successResponse);
+    }
+
+    @PatchMapping("/{postId}/mentoring")
+    public ResponseEntity<SuccessResponseDto<PostDto>> mentoringEdit(Authentication authentication,
+                                                                     @PathVariable("postId") Long postId,
+                                                                     @RequestBody MentoringRequestDto mentoringRequestDto){
+        String loginId = controllerUtil.getAuthorizedLoginId(authentication);
+        Long editPostId = postService.editPost(loginId, postId, mentoringRequestDto);
         PostDto postDto = postQueryService.postInfo(editPostId);
         SuccessResponseDto<PostDto> successResponse =
                 controllerUtil.createSuccessResponse(postDto, HttpServletResponse.SC_OK);
