@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static com.devmate.apiserver.domain.QComment.comment;
+import static com.devmate.apiserver.domain.QGood.*;
 import static com.devmate.apiserver.domain.QHashTag.hashTag;
 import static com.devmate.apiserver.domain.QMember.member;
 import static com.devmate.apiserver.domain.QPost.post;
@@ -25,6 +26,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
     QPost qPost = post;
     QMember qMember = member;
     QComment qComment = comment;
+    QGood qGood = good;
     QPostHashTag qPostHashTag = postHashTag;
     QHashTag qHashTag = hashTag;
     private final JPAQueryFactory queryFactory;
@@ -75,6 +77,14 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
                             .from(comment)
                             .where(comment.member.id.eq(memberId))
                             .groupBy(comment.post.id));
+        }
+        else if(type.equals("good")){
+            return post.id.in(
+                    JPAExpressions
+                            .select(good.post.id)
+                            .from(good)
+                            .where(good.member.id.eq(memberId))
+                            .groupBy(good.post.id));
         }
         return null;
     }
