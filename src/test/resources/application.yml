@@ -1,0 +1,31 @@
+# H2 데이터베이스 설정
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password:
+
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+
+jwt:
+  secret: 4f825379d86d10570287b521eee0bf24fbf40f5481091168eb4b295486d5a2f9
+
+cloud:
+  aws:
+    credentials:
+      secret-key: test
+      access-key: test123
+
+    s3:
+      bucketName: test123123
+    region:
+      static: 123123
+
+    stack:
+      auto: true
