@@ -38,3 +38,4 @@ out/
 
 ### Secure Config ###
 src/main/resources/application-private.yml
+src/main/resources/application-dev.yml
