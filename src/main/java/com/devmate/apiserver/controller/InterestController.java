@@ -32,9 +32,9 @@ public class InterestController {
     private final ControllerUtil controllerUtil;
     private final InterestService interestService;
 
-    @Operation(summary = "관심 직종 조회", description = "관심 직종 정보 조회")
+    @Operation(summary = "모든 관심 직종 조회", description = "관심 직종 정보 조회")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "조회 성공", content = @Content(schema = @Schema(implementation = SuccessResponseDto.class))),
+            @ApiResponse(responseCode = "200", description = "조회 성공", content = @Content(schema = @Schema(implementation = InterestDto.class))),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스", content = @Content(schema = @Schema(implementation = FailResponseDto.class))),
     })
     @GetMapping
@@ -48,6 +48,11 @@ public class InterestController {
         return ResponseEntity.ok().body(successResponse);
     }
 
+    @Operation(summary = "관심 직종 정보 조회", description = "관심 직종 정보 조회")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "조회 성공", content = @Content(schema = @Schema(implementation = InterestDto.class))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스", content = @Content(schema = @Schema(implementation = FailResponseDto.class))),
+    })
     @GetMapping("/{id}")
     public ResponseEntity<SuccessResponseDto<InterestDto>> interest(@PathVariable("id") Long id){
         Interest interest = interestService.findInterest(id);
