@@ -1,9 +1,7 @@
 package com.devmate.apiserver;
 
-import com.devmate.apiserver.controller.PostController;
 import com.devmate.apiserver.domain.Interest;
 import com.devmate.apiserver.domain.Member;
-import com.devmate.apiserver.dto.post.request.PostRequestDto;
 import com.devmate.apiserver.repository.InterestRepository;
 import com.devmate.apiserver.repository.MemberRepository;
 import com.devmate.apiserver.service.post.PostService;

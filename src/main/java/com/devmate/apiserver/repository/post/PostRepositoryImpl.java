@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static com.devmate.apiserver.domain.QComment.comment;
@@ -38,7 +39,9 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
 
         QueryResults<Post> results = queryFactory.selectFrom(post)
                 .join(post.member, member).fetchJoin()
-                .where(dTypeEq(category).and(titleOrContentLike(search)),tagFiltering(tags))
+                .join(post.postHashTag, postHashTag)
+                .join(postHashTag.hashTag, hashTag)
+                .where(dTypeEq(category).and(titleOrContentLike(search)), hashTagNameIn(tags))
                 .orderBy(getOrderBy(sort))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -48,8 +51,6 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
         return new PageImpl<>(content , pageable, totalCount);
     }
 
-
-    //Todo 좋아요한 글 조회 기능 추가 예정
     @Override
     public Page<Post> findPostAllByMemberFilterParam(Long memberId, String type , Pageable pageable){
 
@@ -89,18 +90,11 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
         return null;
     }
 
-    private BooleanExpression tagFiltering(String[] tags) {
-        if(tags == null || tags.length == 0){
+    private BooleanExpression hashTagNameIn(String[] tags) {
+        if (tags == null || tags.length == 0) {
             return null;
         }
-        return post.id.in(
-                JPAExpressions
-                        .select(postHashTag.post.id)
-                        .from(postHashTag)
-                        .join(postHashTag.hashTag, hashTag)
-                        .where(hashTag.name.in(tags))
-                        .groupBy(postHashTag.post.id)
-        );
+        return hashTag.name.in(tags);
     }
 
     private BooleanExpression dTypeEq(String category){
