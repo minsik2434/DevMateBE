@@ -51,21 +51,22 @@ public class PostService {
     }
 
     public void deletePost(String loginId, Long postId){
-        Post post = postRepository.findPostAndMemberById(postId).orElseThrow(() ->
+        Post post = postRepository.findPostAndMemberById(postId, loginId).orElseThrow(() ->
                 new NoSuchElementException("Not Found Post"));
 
-        if(!post.getMember().getLoginId().equals(loginId)){
-            throw new LackOfPermissionException("Lack of Permission");
-        }
+//        if(!post.getMember().getLoginId().equals(loginId)){
+//            throw new LackOfPermissionException("Lack of Permission");
+//        }
         postRepository.delete(post);
     }
 
     public <T extends RequestDto> Long editPost(String loginId, Long postId, T postEditDto){
-        Post post = postRepository.findPostAndMemberById(postId).orElseThrow(() ->
+        Post post = postRepository.findPostAndMemberById(postId, loginId).orElseThrow(() ->
                 new NoSuchElementException("Not Found Post"));
-        if(!post.getMember().getLoginId().equals(loginId)){
-            throw new LackOfPermissionException("Lack of Permission");
-        }
+
+//        if(!post.getMember().getLoginId().equals(loginId)){
+//            throw new LackOfPermissionException("Lack of Permission");
+//        }
         post.getPostHashTag().clear();
 
         //Todo 해시태그 적용하는 부분 메서드로 추출해 리펙토링 해도 될거같음
