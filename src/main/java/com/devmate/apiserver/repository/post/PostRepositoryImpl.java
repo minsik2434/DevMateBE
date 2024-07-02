@@ -5,8 +5,10 @@ import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static com.devmate.apiserver.domain.QComment.comment;
 import static com.devmate.apiserver.domain.QGood.*;
@@ -23,6 +26,7 @@ import static com.devmate.apiserver.domain.QPost.post;
 import static com.devmate.apiserver.domain.QPostHashTag.postHashTag;
 
 @Repository
+@Slf4j
 public class PostRepositoryImpl implements PostRepositoryCustom{
     QPost qPost = post;
     QMember qMember = member;
@@ -37,10 +41,14 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
 
     public Page<Post> findPostAllByParam(String category, String sort, String search, String[] tags, Pageable pageable){
 
-        QueryResults<Post> results = queryFactory.selectFrom(post)
-                .join(post.member, member).fetchJoin()
-                .join(post.postHashTag, postHashTag)
-                .join(postHashTag.hashTag, hashTag)
+        JPAQuery<Post> baseQuery = queryFactory.selectFrom(post)
+                .join(post.member, member).fetchJoin();
+
+        if (!(tags == null || tags.length == 0)) {
+            baseQuery.join(post.postHashTag, postHashTag)
+                    .join(postHashTag.hashTag, hashTag);
+        }
+        QueryResults<Post> results = baseQuery
                 .where(dTypeEq(category).and(titleOrContentLike(search)), hashTagNameIn(tags))
                 .orderBy(getOrderBy(sort))
                 .offset(pageable.getOffset())
