@@ -24,11 +24,11 @@ public class GoodService {
     private final MemberRepository memberRepository;
     private final PostRepository postRepository;
 
-    public GoodDto findGood(String loginId , Long postId){
+    public boolean findGood(String loginId , Long postId){
         Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new NoSuchElementException("Not Found Member"));
         Post post = postRepository.findById(postId).orElseThrow(() -> new NoSuchElementException("Not Found Post"));
-        Good good = goodRepository.findGoodByMemberAndPost(member, post).orElseThrow(() -> new NoSuchElementException("Not Found Good"));
-        return new GoodDto(good.getId());
+        Optional<Good> good = goodRepository.findGoodByMemberAndPost(member, post);
+        return good.isPresent();
     }
 
     @Transactional
