@@ -4,7 +4,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
 
     show-sql: true
 
@@ -20,6 +20,6 @@ spring:
     include: private
 logging:
   level:
-    root: info
+    root: warn
 server:
   port: 8080
