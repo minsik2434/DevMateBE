@@ -48,11 +48,11 @@ public class GoodController {
             @ApiResponse(responseCode = "401", description = "인증 에러", content = @Content(schema = @Schema(implementation = FailResponseDto.class)))
     })
     @GetMapping("/{postId}")
-    public ResponseEntity<SuccessResponseDto<GoodDto>> findGood(@PathVariable("postId") Long postId, Authentication authentication){
+    public ResponseEntity<SuccessResponseDto<Boolean>> findGood(@PathVariable("postId") Long postId, Authentication authentication){
         String loginId = controllerUtil.getAuthorizedLoginId(authentication);
-        GoodDto goodDto = goodService.findGood(loginId, postId);
-        SuccessResponseDto<GoodDto> successResponse =
-                controllerUtil.createSuccessResponse(goodDto, HttpServletResponse.SC_OK);
+        boolean isGood = goodService.findGood(loginId, postId);
+        SuccessResponseDto<Boolean> successResponse =
+                controllerUtil.createSuccessResponse(isGood, HttpServletResponse.SC_OK);
         return ResponseEntity.ok(successResponse);
     }
 

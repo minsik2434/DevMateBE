@@ -5,14 +5,18 @@ import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static com.devmate.apiserver.domain.QComment.comment;
 import static com.devmate.apiserver.domain.QGood.*;
@@ -22,6 +26,7 @@ import static com.devmate.apiserver.domain.QPost.post;
 import static com.devmate.apiserver.domain.QPostHashTag.postHashTag;
 
 @Repository
+@Slf4j
 public class PostRepositoryImpl implements PostRepositoryCustom{
     QPost qPost = post;
     QMember qMember = member;
@@ -36,9 +41,15 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
 
     public Page<Post> findPostAllByParam(String category, String sort, String search, String[] tags, Pageable pageable){
 
-        QueryResults<Post> results = queryFactory.selectFrom(post)
-                .join(post.member, member).fetchJoin()
-                .where(dTypeEq(category).and(titleOrContentLike(search)),tagFiltering(tags))
+        JPAQuery<Post> baseQuery = queryFactory.selectFrom(post)
+                .join(post.member, member).fetchJoin();
+
+        if (!(tags == null || tags.length == 0)) {
+            baseQuery.join(post.postHashTag, postHashTag)
+                    .join(postHashTag.hashTag, hashTag);
+        }
+        QueryResults<Post> results = baseQuery
+                .where(dTypeEq(category).and(titleOrContentLike(search)), hashTagNameIn(tags))
                 .orderBy(getOrderBy(sort))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -48,8 +59,6 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
         return new PageImpl<>(content , pageable, totalCount);
     }
 
-
-    //Todo 좋아요한 글 조회 기능 추가 예정
     @Override
     public Page<Post> findPostAllByMemberFilterParam(Long memberId, String type , Pageable pageable){
 
@@ -89,18 +98,11 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
         return null;
     }
 
-    private BooleanExpression tagFiltering(String[] tags) {
-        if(tags == null || tags.length == 0){
+    private BooleanExpression hashTagNameIn(String[] tags) {
+        if (tags == null || tags.length == 0) {
             return null;
         }
-        return post.id.in(
-                JPAExpressions
-                        .select(postHashTag.post.id)
-                        .from(postHashTag)
-                        .join(postHashTag.hashTag, hashTag)
-                        .where(hashTag.name.in(tags))
-                        .groupBy(postHashTag.post.id)
-        );
+        return hashTag.name.in(tags);
     }
 
     private BooleanExpression dTypeEq(String category){

@@ -20,6 +20,5 @@ public class MentoringRequestDto extends RequestDto {
     private String job;
     @NotNull(message = "career not null")
     private Integer career;
-    @NotBlank(message = "githubUrl not Blank")
     private String githubUrl;
 }
