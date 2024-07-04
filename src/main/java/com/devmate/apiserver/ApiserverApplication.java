@@ -15,31 +15,7 @@ import java.util.List;
 
 @SpringBootApplication
 public class ApiserverApplication {
-	@Autowired MemberRepository memberRepository;
-	@Autowired
-	InterestRepository interestRepository;
-	@Autowired
-	PostService postService;
 	public static void main(String[] args) {
 		SpringApplication.run(ApiserverApplication.class, args);
-	}
-
-	@PostConstruct
-	public void initData(){
-		Member member1 = new Member("testId","testPassword","choiminsik",
-				"minsik",true,"testUrl");
-		Member member2 = new Member("testId2","testPassword","minsik",
-				"minsiiiki",true,"testUrl");
-		memberRepository.save(member1);
-		memberRepository.save(member2);
-
-		Interest interest1 = new Interest("AI");
-		Interest interest2 = new Interest("FrontEnd");
-		Interest interest3 = new Interest("BackEnd");
-		List<Interest> list = new ArrayList<>();
-		list.add(interest1);
-		list.add(interest2);
-		list.add(interest3);
-		interestRepository.saveAll(list);
 	}
 }
