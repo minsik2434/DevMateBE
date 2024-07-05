@@ -5,6 +5,8 @@ import com.devmate.apiserver.common.exception.LackOfPermissionException;
 import com.devmate.apiserver.domain.Good;
 import com.devmate.apiserver.domain.Member;
 import com.devmate.apiserver.domain.Post;
+import com.devmate.apiserver.dto.good.CheckGoodDto;
+import com.devmate.apiserver.dto.good.ExistGoodDto;
 import com.devmate.apiserver.dto.good.GoodDto;
 import com.devmate.apiserver.repository.GoodRepository;
 import com.devmate.apiserver.repository.MemberRepository;
@@ -24,11 +26,16 @@ public class GoodService {
     private final MemberRepository memberRepository;
     private final PostRepository postRepository;
 
-    public boolean findGood(String loginId , Long postId){
+    public CheckGoodDto findGood(String loginId , Long postId){
         Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new NoSuchElementException("Not Found Member"));
         Post post = postRepository.findById(postId).orElseThrow(() -> new NoSuchElementException("Not Found Post"));
         Optional<Good> good = goodRepository.findGoodByMemberAndPost(member, post);
-        return good.isPresent();
+        if(good.isPresent()){
+            return new ExistGoodDto(true, good.get().getId());
+        }
+        else{
+            return new CheckGoodDto(false);
+        }
     }
 
     @Transactional

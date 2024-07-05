@@ -3,6 +3,7 @@ package com.devmate.apiserver.controller;
 import com.devmate.apiserver.controller.util.ControllerUtil;
 import com.devmate.apiserver.dto.FailResponseDto;
 import com.devmate.apiserver.dto.SuccessResponseDto;
+import com.devmate.apiserver.dto.good.CheckGoodDto;
 import com.devmate.apiserver.dto.good.GoodDto;
 import com.devmate.apiserver.service.GoodService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -48,11 +49,11 @@ public class GoodController {
             @ApiResponse(responseCode = "401", description = "인증 에러", content = @Content(schema = @Schema(implementation = FailResponseDto.class)))
     })
     @GetMapping("/{postId}")
-    public ResponseEntity<SuccessResponseDto<Boolean>> findGood(@PathVariable("postId") Long postId, Authentication authentication){
+    public ResponseEntity<SuccessResponseDto<CheckGoodDto>> findGood(@PathVariable("postId") Long postId, Authentication authentication){
         String loginId = controllerUtil.getAuthorizedLoginId(authentication);
-        boolean isGood = goodService.findGood(loginId, postId);
-        SuccessResponseDto<Boolean> successResponse =
-                controllerUtil.createSuccessResponse(isGood, HttpServletResponse.SC_OK);
+        CheckGoodDto checkGoodDto = goodService.findGood(loginId, postId);
+        SuccessResponseDto<CheckGoodDto> successResponse =
+                controllerUtil.createSuccessResponse(checkGoodDto, HttpServletResponse.SC_OK);
         return ResponseEntity.ok(successResponse);
     }
 
