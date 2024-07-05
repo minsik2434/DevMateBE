@@ -18,7 +18,7 @@ import java.util.List;
 @Getter
 @ToString
 public abstract class Post {
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id")
     private Long id;
     private String title;
