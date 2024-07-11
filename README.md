@@ -96,5 +96,25 @@
 | 조회 | 해당 회원이 작성,좋아요,댓글 단 게시글 조회, 인증 헤더 필요, 쿼리 파라미터 type(조회 기준) : comment, post, good 쿼리 파라미터 page(페이지) : 0부터 시작 | GET | /post/member | /post/member?type=post&page=0 | <img width="431" alt="스크린샷 2024-07-11 오후 5 59 26" src="https://github.com/minsik2434/DevMateBE/assets/119111149/a15a7f75-0a91-479f-895a-638726634001"> | 200: 조회 성공, 401: 인증 에러, 404:존재하지 않는 리소스 | 
 | 삭제 | 게시글 삭제, 인증 헤더 필요 | DELETE | /post/{postId} | /post/1 | no Content | 204: 삭제 성공, 401: 인증에러, 404:존재하지 않는 리소스 |
 
+### 좋아요 
+| 기능   | 설명   | 메소드 | 엔드포인트 | Request | Response | 기타   |
+|--------|--------|-----|------------|---------|----------|--------|
+| 등록 | 좋아요 추가, 인증 헤더 필요, 회원은 한 게시글에 좋아요 한번만 가능 | POST | /goods/{postId} | /goods/1 | <img width="391" alt="스크린샷 2024-07-11 오후 6 08 39" src="https://github.com/minsik2434/DevMateBE/assets/119111149/51960ecf-ad40-4105-8ea6-652c7105d1a9"> | 201:성공, 401:인증 오류, 404: 존재하지 않는 리소스 | 409: 이미 존재하는 리소스 |
+| 조회 | 좋아요 아이디로 조회,인증 헤더 필요 | GET | /goods/{goodId} | /goods/16 / <img width="384" alt="스크린샷 2024-07-11 오후 6 11 11" src="https://github.com/minsik2434/DevMateBE/assets/119111149/58e1b51e-888c-4c86-8354-7b0f168b24af"> | 200: 조회 성공, 401 인증에러, 404:존재하지 않는 리소스 |
+| 삭제 | 좋아요 아이디로 좋아요 삭제, 인증 헤더 필요 | DELETE | /goods/{goodId} | /goods/16 | noContent | 204: 삭제 성공, 401:인증 에러, 404:존재하지 않는 리소스 |
+
+### 댓글
+| 기능   | 설명   | 메소드 | 엔드포인트 | Request | Response | 기타   |
+|--------|--------|-----|------------|---------|----------|--------|
+| 등록 | 댓글 등록, 인증 헤더 필요 | POST | /comments/{postId} | <img width="254" alt="스크린샷 2024-07-11 오후 6 17 09" src="https://github.com/minsik2434/DevMateBE/assets/119111149/97b82126-3116-43a5-a6e0-bff1ff669ef4"> | <img width="424" alt="스크린샷 2024-07-11 오후 6 16 52" src="https://github.com/minsik2434/DevMateBE/assets/119111149/6cf5f034-bd23-4300-b0b6-da33c7c956b7"> | 201: 댓글 등록성공, 400:BadRequest, 401:인증에러, 404:존재하지 않는 리소스 | 
+| 수정 | 댓글 수정, 인증 헤더 필요 | PATCH | /comments/{commentId} |<img width="223" alt="스크린샷 2024-07-11 오후 6 19 30" src="https://github.com/minsik2434/DevMateBE/assets/119111149/35f52806-f4b7-4978-817b-ad35267023a2"> | <img width="420" alt="스크린샷 2024-07-11 오후 6 19 04" src="https://github.com/minsik2434/DevMateBE/assets/119111149/55c59991-6e50-4c81-8132-e43081640b9f"> | 200: 수정 성공, 400:BadRequest, 404: 존재하지 않는 리소스 |
+| 삭제 | 댓글 삭제, 인증 헤더 필요 | DELETE | /comments/{commnetId} | /comments/16 | noContent | 204:삭제 성공, 401:인증에러, 404:존재하지 않는 리소스 | 
+| 조회 | 게시글 댓글 리스트 조회 | GET | /comments/{postId} | /comments/1 | <img width="432" alt="스크린샷 2024-07-11 오후 6 23 13" src="https://github.com/minsik2434/DevMateBE/assets/119111149/430115ac-c0b0-4b8e-a053-10d73b203c6b"> | 200:댓글 조회 성공, 404:존재하지 않는 리소스 | 
+
+### 이미지
+| 기능   | 설명   | 메소드 | 엔드포인트 | Request | Response | 기타   |
+|--------|--------|-----|------------|---------|----------|--------|
+| 등록 | 이미지 s3에 업로드,인증 헤더 필요, 이미지 multypart로 입력 | POST | /image/upload | <img width="145" alt="스크린샷 2024-07-11 오후 6 25 33" src="https://github.com/minsik2434/DevMateBE/assets/119111149/81554ec1-c1f3-4b38-b3e3-84106dcb1801"> | <img width="170" alt="스크린샷 2024-07-11 오후 6 25 58" src="https://github.com/minsik2434/DevMateBE/assets/119111149/e94a532c-3ed0-465e-95f5-091e42a46495"> | 200 : 이미지 업로드 성공, 401 인증 에러 | 
+| 삭제 | s3에 업로드된 이미지 삭제, 인증 헤더 필요 | POST | /image/delete | <img width="163" alt="스크린샷 2024-07-11 오후 6 26 59" src="https://github.com/minsik2434/DevMateBE/assets/119111149/17f58b3a-11ea-4641-91d1-d898a78ea24d"> | noContent | 204:삭제 성공, 401:인증 에러 |
 
 
