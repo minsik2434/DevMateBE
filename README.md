@@ -6,7 +6,8 @@
 - <b>스웨거 주소 (API 명세) : https://devmate.store/swagger-ui/index.html</b>
 - <b>사이트 링크 : [데브메이트 바로가기](https://devmate-fe.vercel.app)</b>
 - <b> 테스트 계정 : 아이디:test, 비밀번호: test123
-
+- <b> 상세 설명 및 아키텍쳐,ERD, 기획 정보는 https://github.com/minsik2434/DevMateFE 에 기재되어 있습니다
+ 
 # 기술스택
 
 <div>
