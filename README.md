@@ -63,3 +63,38 @@
 ### 이미지 관련
 - 등록 : 이미지 정보를 multypart 로 입력 받아 AWS S3 에 저장
 - 삭제 : 이미지 url 입력받아 S3 이미지 삭제
+
+  # API 명세 
+### 회원
+| 기능   | 설명   | 메소드 | 엔드포인트 | Request | Response | 기타   |
+|--------|--------|-----|------------|---------|----------|--------|
+| 등록  | 회원 정보 등록 | POST | /members/register | <img width="264" alt="스크린샷 2024-07-11 오후 4 37 53" src="https://github.com/minsik2434/DevMateBE/assets/119111149/00450802-cfb7-4d87-a7d3-b3e8e6264b76">  | <img width="430" alt="스크린샷 2024-07-11 오후 4 46 37" src="https://github.com/minsik2434/DevMateBE/assets/119111149/44f1ca18-d4f9-43fe-b409-e864c7ed0a3d"> | 201:회원 등록 성공, 400: 입력값 검증실패, 404: 존재하지 않는 관심직종, 409: 중복 리소스,  |
+| 로그인  | 회원 로그인  | POST | /members/signin | <img width="172" alt="스크린샷 2024-07-11 오후 4 50 07" src="https://github.com/minsik2434/DevMateBE/assets/119111149/0937fee4-9300-4109-86d7-235bd3680cb8"> | <img width="460" alt="스크린샷 2024-07-11 오후 4 51 04" src="https://github.com/minsik2434/DevMateBE/assets/119111149/bbe855dc-1008-4dac-b4b5-b82214c316a3"> | 200: 로그인 성공, 400:BadRequest, 401:로그인 실패 |
+| 수정 | 회원 수정, 회원 accessToken 필요 | PATCH | /members | <img width="197" alt="스크린샷 2024-07-11 오후 4 55 41" src="https://github.com/minsik2434/DevMateBE/assets/119111149/1a71cce3-81c3-43ff-a862-2838e705ab7b"> | <img width="366" alt="스크린샷 2024-07-11 오후 4 56 52" src="https://github.com/minsik2434/DevMateBE/assets/119111149/e994564e-ed1d-4f73-9163-711df305a44a"> | 200: 수정 성공, 400:BadRequest, 401:인증 실패, 404:존재하지 않는 리소스 |
+| 회원 조회 | 회원 AccessToken으로 회원 정보 조회 | GET | /members | /members | <img width="357" alt="스크린샷 2024-07-11 오후 5 00 51" src="https://github.com/minsik2434/DevMateBE/assets/119111149/bd62b688-3396-47e0-a4a7-860bf6f2f993"> | 200: 회원 조회 성공, 404: 존재하지 않는 리소스 | 
+| 회원 조회 | 회원 닉네임으로 회원 정보 조회 | GET | /members/{nickName} | /members/tester |<img width="434" alt="스크린샷 2024-07-11 오후 5 15 23" src="https://github.com/minsik2434/DevMateBE/assets/119111149/521d4530-2cb3-4c4a-88b2-aecf6dadff8b"> | 200: 조회 성공, 404 : 존재하지 않는 리소스 |
+| 회원 리소스 중복 체크 | 회원 아이디, 회원 닉네임 중복 확인 path경로에 확인할 값, 쿼리파라미터 type에 확인할 타입(로그인 아이디, 닉네임) | GET | /members/{value}/check | /members/tester/check?type=loginId, /members/tester/check?type=nickName | <img width="388" alt="스크린샷 2024-07-11 오후 5 20 13" src="https://github.com/minsik2434/DevMateBE/assets/119111149/3bedc092-5c47-4702-9f69-dbc279165df1"> | 200: 조회 성공 |
+| 삭제 | 회원 탈퇴, 회원 AccessToken 필요 | DELETE | /members | /members | 204 no content | 204: 삭제 성공, 401 : 인증 에러, 404:존재하지 않는 리소스 |
+
+### 관심 직종
+| 기능   | 설명   | 메소드 | 엔드포인트 | Request | Response | 기타   |
+|--------|--------|-----|------------|---------|----------|--------|
+| 조회 | 모든 관심직종 조회 | GET | /interests | /interests |<img width="398" alt="스크린샷 2024-07-11 오후 5 24 03" src="https://github.com/minsik2434/DevMateBE/assets/119111149/7dcbb2ef-fbd4-4779-863a-9b442bb0398b"> | 200 : 조회 성공 | 
+| 조회 | 관심직종 아이디로 조회 | GET | /interests/{id} | /interests/1 | <img width="380" alt="스크린샷 2024-07-11 오후 5 25 50" src="https://github.com/minsik2434/DevMateBE/assets/119111149/7a9575d7-bda4-4035-b847-ada2070f23d2"> | 200 : 조회 성공, 404: 존재하지 않는 리소스 | 
+
+### 게시글 
+| 기능   | 설명   | 메소드 | 엔드포인트 | Request | Response | 기타   |
+|--------|--------|-----|------------|---------|----------|--------|
+| 등록 | 게시글 등록(qna, community, job, review ) 회원 액세스 토큰 필요 | POST | /post/{category} | <img width="220" alt="스크린샷 2024-07-11 오후 5 30 25" src="https://github.com/minsik2434/DevMateBE/assets/119111149/73381446-1c98-4ca6-8325-bdb2694bda5c"> | <img width="407" alt="스크린샷 2024-07-11 오후 5 33 02" src="https://github.com/minsik2434/DevMateBE/assets/119111149/7c6fd1c9-31ca-48d3-bfbf-85d59cc0415b"> | 201:등록 성공, 400:BadRequest, 401:인증에러, 404:존재하지 않는 리소스 |
+| 등록 | 게시글 등록 (study) 회원 액세스 토큰 필요 | POST | /post/study |  <img width="303" alt="스크린샷 2024-07-11 오후 5 36 08" src="https://github.com/minsik2434/DevMateBE/assets/119111149/eae834d8-7885-48d2-953b-1e3b179d8d01"> | <img width="413" alt="스크린샷 2024-07-11 오후 5 36 30" src="https://github.com/minsik2434/DevMateBE/assets/119111149/7d5225f3-d235-442b-94b4-3e2c77b38b82"> | 201: 등록 성공, 400:BadRequest, 401: 인증 에러, 404: 존재하지 않는 리소스 |
+| 등록 | 게시글 등록 (mentoring) 회원 액세스 토큰 필요 | POST | /post/mentoring | <img width="230" alt="스크린샷 2024-07-11 오후 5 40 03" src="https://github.com/minsik2434/DevMateBE/assets/119111149/b4205446-2ee4-44fd-b974-9b8e37bf3c6e"> | <img width="409" alt="스크린샷 2024-07-11 오후 5 39 39" src="https://github.com/minsik2434/DevMateBE/assets/119111149/50ea01a2-8e72-4827-849c-7132373dbe67"> | 201: 등록 성공, 400:BadRequest, 401: 인증 에러, 404: 존재하지 않는 리소스 | 
+| 수정 | 게시글 수정(qna, community, job, review) 회원 액세스 토큰 필요 | PATCH | /post/{postId}/{category} | <img width="237" alt="스크린샷 2024-07-11 오후 5 43 12" src="https://github.com/minsik2434/DevMateBE/assets/119111149/a99f73b8-c4c1-4ea0-87db-9125affc61df"> | <img width="412" alt="스크린샷 2024-07-11 오후 5 43 25" src="https://github.com/minsik2434/DevMateBE/assets/119111149/abf6bb2a-4dd0-48c4-b47c-0bcf90807359"> | 200: 게시글 수정 성공 , 401:인증에러, 404: 존재하지 않는 리소스 |
+| 수정 | 게시글 수정 (study) 회원 액세스 토큰 필요 | PATCH | /post/{postId}/study | <img width="283" alt="스크린샷 2024-07-11 오후 5 46 05" src="https://github.com/minsik2434/DevMateBE/assets/119111149/7075d709-7098-429f-a98e-e00daee9a872"> | <img width="422" alt="스크린샷 2024-07-11 오후 5 45 44" src="https://github.com/minsik2434/DevMateBE/assets/119111149/f498a2d4-1106-45ca-bda6-2bec446b47aa"> | 200: 게시글 수정 성공 , 401:인증에러, 404: 존재하지 않는 리소스 |
+| 수정 | 게시글 수정 (mentoring) 회원 액세스 토큰 필요 | PATCH | /post/{postId}/mentoring | <img width="293" alt="스크린샷 2024-07-11 오후 5 49 04" src="https://github.com/minsik2434/DevMateBE/assets/119111149/354141b7-4b3e-41cd-8256-5b68f61b86d6"> | <img width="413" alt="스크린샷 2024-07-11 오후 5 49 19" src="https://github.com/minsik2434/DevMateBE/assets/119111149/6d3609ad-b9c9-42aa-ade6-3c5c60b51c57"> | 200: 게시글 수정 성공 , 401:인증에러, 404: 존재하지 않는 리소스 |
+| 조회 | 게시글 아이디로 조회 | GET | /post/{id} | /post/1 | <img width="419" alt="스크린샷 2024-07-11 오후 5 51 10" src="https://github.com/minsik2434/DevMateBE/assets/119111149/3f67b804-2214-4c8f-8d0d-942d7ad88d4d"> | 200: 조회 성공, 404:존재하지 않는 리소스 |
+| 조회 | 게시글 리스트 조회, 쿼리 파라미터 sort(정렬 기준): comment, latest, good sc(검색어), tag(태그 검색), page(페이지) : 0 | GET | /post/{category}/list | /post/qna/list?sort=latest&tag=spring&page=0 |<img width="461" alt="스크린샷 2024-07-11 오후 5 56 15" src="https://github.com/minsik2434/DevMateBE/assets/119111149/120c8d9f-af95-490f-9bbb-09d33d4ec7d1"> | 200:게시글 조회 성공, 404: 존재하지 않는 리소스 |
+| 조회 | 해당 회원이 작성,좋아요,댓글 단 게시글 조회, 인증 헤더 필요, 쿼리 파라미터 type(조회 기준) : comment, post, good 쿼리 파라미터 page(페이지) : 0부터 시작 | GET | /post/member | /post/member?type=post&page=0 | <img width="431" alt="스크린샷 2024-07-11 오후 5 59 26" src="https://github.com/minsik2434/DevMateBE/assets/119111149/a15a7f75-0a91-479f-895a-638726634001"> | 200: 조회 성공, 401: 인증 에러, 404:존재하지 않는 리소스 | 
+| 삭제 | 게시글 삭제, 인증 헤더 필요 | DELETE | /post/{postId} | /post/1 | no Content | 204: 삭제 성공, 401: 인증에러, 404:존재하지 않는 리소스 |
+
+
+
