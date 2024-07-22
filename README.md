@@ -118,4 +118,6 @@
 | 등록 | 이미지 s3에 업로드,인증 헤더 필요, 이미지 multypart로 입력 | POST | /image/upload | <img width="145" alt="스크린샷 2024-07-11 오후 6 25 33" src="https://github.com/minsik2434/DevMateBE/assets/119111149/81554ec1-c1f3-4b38-b3e3-84106dcb1801"> | <img width="170" alt="스크린샷 2024-07-11 오후 6 25 58" src="https://github.com/minsik2434/DevMateBE/assets/119111149/e94a532c-3ed0-465e-95f5-091e42a46495"> | 200 : 이미지 업로드 성공, 401 인증 에러 | 
 | 삭제 | s3에 업로드된 이미지 삭제, 인증 헤더 필요 | POST | /image/delete | <img width="163" alt="스크린샷 2024-07-11 오후 6 26 59" src="https://github.com/minsik2434/DevMateBE/assets/119111149/17f58b3a-11ea-4641-91d1-d898a78ea24d"> | noContent | 204:삭제 성공, 401:인증 에러 |
 
-
+## APM
+- 네이버에서 오픈소스로 제공하는 핀포인트를 사용해 서버 트랜잭션 추적 및 관리
+<img width="1425" alt="스크린샷 2024-07-03 오후 2 31 52" src="https://github.com/user-attachments/assets/dd7e46d1-6c6b-4bbd-bbd5-ca204d0f1311">
