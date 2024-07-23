@@ -22,20 +22,20 @@ public class MemberQueryService {
     public SimpleMemberDto getSimpleMemberInfoByNickName(String nickName){
         Optional<Member> memberAndInterestsByNickName = memberRepository.findMemberAndInterestsByNickName(nickName);
         Member member = memberAndInterestsByNickName.orElseGet(() -> memberRepository.findByNickName(nickName).orElseThrow(() ->
-                new NoSuchElementException("Member Not Found")));
+                new NoSuchElementException("Not Found Member")));
         return new SimpleMemberDto(member);
     }
 
     public MemberDto getMemberInfoById(Long memberId){
         Optional<Member> memberAndInterestsById = memberRepository.findMemberAndInterestsById(memberId);
         Member member = memberAndInterestsById.orElseGet(() -> memberRepository.findById(memberId).orElseThrow(() ->
-                new NoSuchElementException("Member Not Found")));
+                new NoSuchElementException("Not Found Member")));
         return new MemberDto(member);
     }
     public MemberDto getMemberInfoByLoginId(String loginId){
         Optional<Member> memberAndInterestsByLoginId = memberRepository.findMemberAndInterestsByLoginId(loginId);
         Member member = memberAndInterestsByLoginId.orElseGet(() -> memberRepository.findByLoginId(loginId).orElseThrow(() ->
-                new NoSuchElementException("Member Not Found")));
+                new NoSuchElementException("Not Found Member")));
         return new MemberDto(member);
     }
 }

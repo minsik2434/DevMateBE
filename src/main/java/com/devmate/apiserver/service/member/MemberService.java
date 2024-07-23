@@ -107,7 +107,7 @@ public class MemberService {
         Member member;
         if(memberRepository.findMemberAndInterestsByLoginId(loginId).isEmpty()){
             member = memberRepository.findByLoginId(loginId).orElseThrow(() ->
-                    new NoSuchElementException("Member Not Found"));
+                    new NoSuchElementException("Not Found Member"));
         }
         else{
             member = memberRepository.findMemberAndInterestsByLoginId(loginId).get();
