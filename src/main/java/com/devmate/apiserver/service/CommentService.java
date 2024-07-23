@@ -36,7 +36,8 @@ public class CommentService {
 
     @Transactional
     public void commentDelete(String loginId, Long commentId){
-        Comment comment = commentRepository.findCommentAndMemberAndPostById(commentId).orElseThrow(() -> new NoSuchElementException("Not Found Comment"));
+        Comment comment = commentRepository.findCommentAndMemberAndPostById(commentId)
+                .orElseThrow(() -> new NoSuchElementException("Not Found Comment"));
         if(!comment.getMember().getLoginId().equals(loginId)){
             throw new LackOfPermissionException("Lack of Permission");
         }
@@ -46,7 +47,8 @@ public class CommentService {
 
     @Transactional
     public Long commentEdit(String loginId, Long commentId, CommentRequestDto commentRequestDto){
-        Comment comment = commentRepository.findCommentAndMemberById(commentId).orElseThrow(() -> new NoSuchElementException("Not Found Comment"));
+        Comment comment = commentRepository.findCommentAndMemberById(commentId)
+                .orElseThrow(() -> new NoSuchElementException("Not Found Comment"));
         if(!comment.getMember().getLoginId().equals(loginId)){
             throw new LackOfPermissionException("Lack of Permission");
         }
