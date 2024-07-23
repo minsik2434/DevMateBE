@@ -29,7 +29,7 @@ public class PostService {
     private final HashTagRepository hashTagRepository;
     public <T extends RequestDto> Long postSave(String loginId, String category, T registerDto){
         Member member = memberRepository.findByLoginId(loginId).orElseThrow(
-                () -> new NoSuchElementException("Member Not Found"));
+                () -> new NoSuchElementException("Not Found Member"));
         Post postByCategory = getPostByCategory(member, category, registerDto);
 
         if(!registerDto.getTags().isEmpty()){
