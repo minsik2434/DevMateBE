@@ -9,6 +9,7 @@ import com.devmate.apiserver.dto.post.request.StudyRequestDto;
 import com.devmate.apiserver.repository.post.HashTagRepository;
 import com.devmate.apiserver.repository.MemberRepository;
 import com.devmate.apiserver.repository.post.PostRepository;
+import com.devmate.apiserver.service.post.factory.FactoryProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -94,29 +95,8 @@ public class PostService {
     }
 
     private <T extends RequestDto> Post getPostByCategory(Member member, String category, T registerDto){
-        Post post;
-        if(category.equals("qna")){
-            post = new Qna(member,(PostRequestDto) registerDto);
-        }
-        else if(category.equals("community")){
-            post = new Community(member ,(PostRequestDto) registerDto);
-        }
-        else if(category.equals("job")){
-            post = new JobOpening(member,(PostRequestDto) registerDto);
-        }
-        else if(category.equals("review")){
-            post = new Review(member,(PostRequestDto) registerDto);
-        }
-        else if(category.equals("study")){
-            post = new Study(member, (StudyRequestDto) registerDto);
-        }
-        else if(category.equals("mentoring")){
-            post = new Mento(member, (MentoringRequestDto) registerDto);
-        }
-        else{
-            throw new NoSuchElementException("Not Found Category");
-        }
-        return post;
+        DtoFactory<T> factory = FactoryProvider.getFactory(category);
+        return factory.createPost(member, registerDto);
     }
 
     private <T extends RequestDto> void editPostByCategory(T postEditDto, Post post) {
